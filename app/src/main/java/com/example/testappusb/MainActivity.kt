@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(usb.usbReceiver)
+        usb.flagRead = false
         usb.connection?.close()
         usb.connection = null
         usb.usbSerialDevice?.close()
