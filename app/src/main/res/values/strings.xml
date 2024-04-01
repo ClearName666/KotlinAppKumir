@@ -2,7 +2,7 @@
     <string name="app_name">TestAppUsb</string>
     <string name="kumir">КУМИР</string>
     <string name="connect">Подключить</string>
-    <string name="termData"><![CDATA[>>> Данные]]></string>
+    <string name="termData"><![CDATA[>>> Данные\n]]></string>
     <string name="moveToData">Отправить</string>
     <string name="Text">Текст</string>
     <string name="test">Test</string>
