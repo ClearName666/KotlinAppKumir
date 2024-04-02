@@ -80,6 +80,15 @@ class SettingsSerialConnectDeviceViewAdapter(
 
                         }
                     }
+                } else if (position == 4) {
+                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                            context.usb.onSerialLineFeed(position)
+                        }
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+
+                        }
+                    }
                 }
             }
         }

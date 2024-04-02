@@ -1,29 +1,20 @@
 package com.example.testappusb
 
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
-import android.hardware.usb.UsbRequest
-import android.os.Handler
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.registerReceiver
-import androidx.core.content.getSystemService
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import java.io.IOException
-import java.nio.ByteBuffer
 
 class Usb(val context: Context) {
 
@@ -84,26 +75,19 @@ class Usb(val context: Context) {
 
     private val dtr = false
     private val rts = false
-
-
+    private var lineFeed = "\n"
 
     var connection: UsbDeviceConnection? = null
+    var deviceConnect: UsbDevice? = null
     private var epIN: UsbEndpoint? = null
     private var epOUT: UsbEndpoint? = null
     var usbSerialDevice: UsbSerialDevice? = null
 
     var flagRead: Boolean = false
 
-
-    public fun onSelectUumBit(numBit: Boolean) {
-        var usbManager: UsbManager? = null
-        if (context is MainActivity) {
-            usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
-        }
-        val deviceList = usbManager?.deviceList
-        val device = deviceList?.values?.firstOrNull()
+    fun onSelectUumBit(numBit: Boolean) {
         ConstUsbSettings.numBit = numBit
-        device?.let {
+        deviceConnect?.let {
             if (numBit) {
                 usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
             } else {
@@ -112,32 +96,20 @@ class Usb(val context: Context) {
         }
     }
 
-    public fun onSerialSpeed(speedIndex: Int) {
-        var usbManager: UsbManager? = null
-        if (context is MainActivity) {
-            usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
-        }
-        val deviceList = usbManager?.deviceList
-        val device = deviceList?.values?.firstOrNull()
+    fun onSerialSpeed(speedIndex: Int) {
         ConstUsbSettings.speedIndex = speedIndex
         val speedList: ArrayList<Int> =
             arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200)
-        device?.let {
+        deviceConnect?.let {
             if (speedList.size > speedIndex) {
                 usbSerialDevice?.setBaudRate(speedList.get(speedIndex))
             }
         }
     }
 
-    public fun onSerialParity(parityIndex: Int) {
-        var usbManager: UsbManager? = null
-        if (context is MainActivity) {
-            usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
-        }
-        val deviceList = usbManager?.deviceList
-        val device = deviceList?.values?.firstOrNull()
+    fun onSerialParity(parityIndex: Int) {
         ConstUsbSettings.parityIndex = parityIndex
-        device?.let {
+        deviceConnect?.let {
             if (parityIndex == 0) {
                 usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
             } else if (parityIndex == 1) {
@@ -150,15 +122,9 @@ class Usb(val context: Context) {
         }
     }
 
-    public fun onSerialStopBits(stopBitsIndex: Int) {
-        var usbManager: UsbManager? = null
-        if (context is MainActivity) {
-            usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
-        }
-        val deviceList = usbManager?.deviceList
-        val device = deviceList?.values?.firstOrNull()
+    fun onSerialStopBits(stopBitsIndex: Int) {
         ConstUsbSettings.stopBit = stopBitsIndex
-        device?.let {
+        deviceConnect?.let {
             if (stopBitsIndex == 0) {
                 usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
             } else {
@@ -166,55 +132,83 @@ class Usb(val context: Context) {
             }
         }
     }
+    fun onSerialLineFeed(lineFeedIndex: Int) {
+        if (lineFeedIndex == 0) {
+            lineFeed = "\r"
+        } else if (lineFeedIndex == 1) {
+            lineFeed = "\n"
+        } else {
+            lineFeed = "\r\n"
+        }
+    }
 
 
-    public fun useToConnectToDivice(message: String): String {
-        try {
-            var usbManager: UsbManager? = null
-            if (context is MainActivity) {
-                usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
-            }
-            val deviceList: HashMap<String, UsbDevice>? = usbManager?.deviceList
-            if (deviceList?.size != 0) {
-                if (connection == null) {
-                    return "Нету подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ"
-                } else {
-                    val bytesToSend = message.toByteArray()
-                    connection!!.bulkTransfer(
-                        epOUT, bytesToSend, bytesToSend.size,
-                        USB_WRITE_TIMEOUT_MILLIS
-                    )
-                    connection?.let {
-                        return ""
-                    }
+    fun checkConnectToDevice(): Boolean {
+        if (context is MainActivity) {
+            val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+            val devises: HashMap<String, UsbDevice> = usbManager.deviceList
+            for (device in devises) {
+                if (device.value.deviceName == deviceConnect?.deviceName) {
+                    return true
                 }
+            }
+        }
+        onDestroy()
+        return false
+    }
+    fun onDestroy() {
+        flagRead = false
+        connection?.close()
+        connection = null
+        usbSerialDevice?.close()
+        usbSerialDevice = null
+        deviceConnect = null
+        (context as Activity).runOnUiThread {
+            if (context is MainActivity) {
+                context.showDeviceName("")
+            }
+        }
+    }
+
+    fun useToConnectToDivice(message: String): String {
+        try {
+            if (connection == null) {
+                return "Нету подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ"
             } else {
-                return "Устройство не обнаружено, подключите устройство или попытайтесь воспользоваться кнопкой ПОДКЛЮЧИТЬСЯ"
+                val bytesToSend = (message + lineFeed).toByteArray()
+                connection!!.bulkTransfer(
+                    epOUT, bytesToSend, bytesToSend.size,
+                    USB_WRITE_TIMEOUT_MILLIS
+                )
             }
         } catch (e: Exception) {
             return "В разрешении на устройство было отказано, подключите устройство, что бы разрешить и взаимодействовать с ним"
         }
         return ""
     }
-
-    public fun readToConnectToDevice(context: Context) {
+    fun readToConnectToDevice(context: Context) {
         val buffer = ByteArray(BUFFER_READ)
         Thread {
-            while (flagRead) {
-                val bytes: Int? = connection?.bulkTransfer(epIN, buffer, buffer.size, TIMEOUT_READ)
-                if (bytes != null && bytes > 0) {
-                    if (context is MainActivity) {
+            if (context is MainActivity) {
+                while (flagRead) {
+                    val bytes: Int? =
+                        connection?.bulkTransfer(epIN, buffer, buffer.size, TIMEOUT_READ)
+                    if (bytes != null && bytes > 0) {
                         (context as Activity).runOnUiThread {
                             val str: String = String(buffer, 0, bytes, Charsets.UTF_8)
                             context.showReadData(str)
+                        }
+                    }
+                    if (!checkConnectToDevice()) {
+                        (context as Activity).runOnUiThread {
+                            context.showButtonConnection(false)
                         }
                     }
                 }
             }
         }.start()
     }
-
-    public val usbReceiver = object : BroadcastReceiver() {
+    val usbReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_USB_PERMISSION) {
                 usbSerialDevice?.close()
@@ -282,7 +276,7 @@ class Usb(val context: Context) {
                                             }
                                         }
                                     }
-
+                                    deviceConnect = device
                                     onSelectUumBit(ConstUsbSettings.numBit)
                                     onSerialSpeed(ConstUsbSettings.speedIndex)
                                     onSerialParity(ConstUsbSettings.parityIndex)
@@ -293,6 +287,11 @@ class Usb(val context: Context) {
                                         epOUT, bytesToSend, bytesToSend.size,
                                         USB_WRITE_TIMEOUT_MILLIS
                                     )
+                                    (context as Activity).runOnUiThread {
+                                        if (context is MainActivity) {
+                                            context.showDeviceName(device.productName.toString())
+                                        }
+                                    }
                                     readToConnectToDevice(context)
                                 }
                             }
