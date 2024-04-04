@@ -43,10 +43,9 @@ class MainActivity : AppCompatActivity() {
             SettingsSerialConnectDeviceView(2, arrayListOf("скорость 300", "скорость 600", "скорость 1200", "скорость 2400", "скорость 4800", "скорость 9600", "скорость 19200", "скорость 38400", "скорость 57600", "скорость 115200")),
             SettingsSerialConnectDeviceView(3, arrayListOf("четность None", "четность Even", "четность Odd")),
             SettingsSerialConnectDeviceView(4, arrayListOf("стоп бит 1", "стоп бит 2")),
-            SettingsSerialConnectDeviceView(5, arrayListOf("перев. стр CR", "перев. стр TF", "перев. стр CRTF")
+            SettingsSerialConnectDeviceView(5, arrayListOf("перев. стр CR", "перев. стр TF", "перев. стр CRTF")),
+            SettingsSerialConnectDeviceView(6, arrayListOf("прием перев. стр CR", "прием перев. стр TF", "прием перев. стр CRTF"))
         )
-        )
-
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
         showElements.settingsRecyclerView.adapter = adapter
         showElements.settingsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -147,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun showReadData(data: String) {
         val textTerm: String = showElements.textDataTerm.text.toString()
-        val message: String = "output>>>" + data + "\n"
+        val message: String = "output>>>" + data
         showElements.textDataTerm.text = textTerm + message
         showTermTextBottom()
     }

@@ -76,6 +76,7 @@ class Usb(val context: Context) {
     private val dtr = false
     private val rts = false
     private var lineFeed = "\n"
+    private var lineFeedRead = "\n"
 
     var connection: UsbDeviceConnection? = null
     var deviceConnect: UsbDevice? = null
@@ -141,6 +142,15 @@ class Usb(val context: Context) {
             lineFeed = "\r\n"
         }
     }
+    fun onSerialLineFeedRead(lineFeedIndex: Int) {
+        if (lineFeedIndex == 0) {
+            lineFeedRead = "\r"
+        } else if (lineFeedIndex == 1) {
+            lineFeedRead = "\n"
+        } else {
+            lineFeedRead = "\r\n"
+        }
+    }
 
 
     fun checkConnectToDevice(): Boolean {
@@ -196,7 +206,7 @@ class Usb(val context: Context) {
                     if (bytes != null && bytes > 0) {
                         (context as Activity).runOnUiThread {
                             val str: String = String(buffer, 0, bytes, Charsets.UTF_8)
-                            context.showReadData(str)
+                            context.showReadData(str + lineFeedRead)
                         }
                     }
                     if (!checkConnectToDevice()) {
