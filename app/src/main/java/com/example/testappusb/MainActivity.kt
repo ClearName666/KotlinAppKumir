@@ -122,9 +122,12 @@ class MainActivity : AppCompatActivity() {
             val deviceList: HashMap<String, UsbDevice> = usbManager.deviceList
             try {
                 val device: UsbDevice = deviceList.values.toList().get(which)
-                device?.let {
+                if (device.productName.toString() == list.get(which)) {
                     connectToUsbDevice(device)
+                } else {
+                    showAlertDialog("Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова")
                 }
+
             } catch (e: IndexOutOfBoundsException) {
                 showAlertDialog("Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова")
             }
