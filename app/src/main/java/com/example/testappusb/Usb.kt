@@ -210,7 +210,7 @@ class Usb(val context: Context) {
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
-        //deviceConnect = null
+        deviceConnect = null
         if (context is UsbActivityInterface) {
             (context as Activity).runOnUiThread {
                 context.showButtonConnection(false)
@@ -290,7 +290,7 @@ class Usb(val context: Context) {
                                 }.start()
                                 usbSerialDevice?.let {
                                     if (it.open()) {
-                                        val readCallback = UsbSerialInterface.UsbReadCallback { bytes ->
+                                        val readCallback = UsbReadCallback { bytes ->
                                             val receivedData: String = String(bytes, Charsets.UTF_8)
                                             printUIThread("output>>>" + receivedData + lineFeedRead)
                                         }
