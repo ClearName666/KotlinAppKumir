@@ -6,5 +6,7 @@ class ConstUsbSettings {
         var speedIndex: Int = 0
         var parityIndex: Int = 0
         var stopBit: Int = 0
+        var dtr: Int = 0
+        var rts: Int = 0
     }
 }

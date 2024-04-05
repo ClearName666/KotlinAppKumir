@@ -11,6 +11,7 @@ import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testappusb.MainActivity
 import com.example.testappusb.R
+import com.example.testappusb.UsbActivityInterface
 import com.example.testappusb.model.SettingsSerialConnectDeviceView
 
 
@@ -37,7 +38,7 @@ class SettingsSerialConnectDeviceViewAdapter(
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             holder.spinner.adapter = adapter
             //listSpinner.add(holder.spinner)
-            if (context is MainActivity) {
+            if (context is UsbActivityInterface) {
                 if (position == 0) {
                     holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -94,6 +95,24 @@ class SettingsSerialConnectDeviceViewAdapter(
                     holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                             context.usb.onSerialLineFeedRead(position)
+                        }
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+
+                        }
+                    }
+                } else if (position == 6) {
+                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                            context.usb.onSerialDTR(position)
+                        }
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+
+                        }
+                    }
+                } else if (position == 7) {
+                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                            context.usb.onSerialRTS(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
 

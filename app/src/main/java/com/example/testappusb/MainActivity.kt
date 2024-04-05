@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.BoringLayout
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,14 +23,12 @@ import com.example.testappusb.model.SettingsSerialConnectDeviceView
 import java.util.concurrent.Executors
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
     lateinit var showElements: ActivityMainBinding
-    private var message: String = ""
 
-    val executorUsb = Executors.newSingleThreadExecutor()
-    val mainHandler: Handler = Handler(Looper.getMainLooper())
-    val usb: Usb = Usb(this)
+    var isRestrierReceiver: Boolean = false
+    override val usb: Usb = Usb(this)
 
 
 
@@ -43,8 +42,10 @@ class MainActivity : AppCompatActivity() {
             SettingsSerialConnectDeviceView(2, arrayListOf("скорость 300", "скорость 600", "скорость 1200", "скорость 2400", "скорость 4800", "скорость 9600", "скорость 19200", "скорость 38400", "скорость 57600", "скорость 115200")),
             SettingsSerialConnectDeviceView(3, arrayListOf("четность None", "четность Even", "четность Odd")),
             SettingsSerialConnectDeviceView(4, arrayListOf("стоп бит 1", "стоп бит 2")),
-            SettingsSerialConnectDeviceView(5, arrayListOf("перев. стр CR", "перев. стр TF", "перев. стр CRTF")),
-            SettingsSerialConnectDeviceView(6, arrayListOf("прием перев. стр CR", "прием перев. стр TF", "прием перев. стр CRTF"))
+            SettingsSerialConnectDeviceView(5, arrayListOf("перев. стр CR", "перев. стр LF", "перев. стр CRLF", "перев. стр LFCR")),
+            SettingsSerialConnectDeviceView(6, arrayListOf("прием перев. стр CR", "прием перев. стр LF", "прием перев. стр CRLF", "прием перев. стр LFCR")),
+            SettingsSerialConnectDeviceView(7, arrayListOf("DTR нет", "DTR да")),
+            SettingsSerialConnectDeviceView(8, arrayListOf("RTS нет", "RTS да"))
         )
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
         showElements.settingsRecyclerView.adapter = adapter
@@ -53,9 +54,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(usb.usbReceiver)
+        if (isRestrierReceiver) {
+            unregisterReceiver(usb.usbReceiver)
+        }
         usb.onDestroy()
-        executorUsb.shutdown()
+        usb.executorUsb.shutdown()
+
     }
 
     fun onClickButtonConnect(view: View) {
@@ -79,29 +83,13 @@ class MainActivity : AppCompatActivity() {
     fun onClickButtonMoveToData(view: View) {
         val textIn: String = showElements.textInputDataForMoveToData.text.toString()
         if (textIn.length != 0) {
-            message = "input>>>" + textIn + "\n"
             showElements.textInputDataForMoveToData.setText("")
-            var response: String? = null
-            executorUsb.execute {
-                response = usb.useToConnectToDivice(textIn)
-                if (response != "") {
-                    mainHandler.post {
-                        showButtonConnection(false)
-                        showAlertDialog(response.toString())
-                    }
-                } else {
-                    mainHandler.post {
-                        val termText: String = showElements.textDataTerm.text.toString()
-                        showElements.textDataTerm.text = termText + message
-                        showTermTextBottom()
-                    }
-                }
-            }
+            usb.useToConnectToDivice(textIn)
         }
     }
 
 
-    fun showButtonConnection(con: Boolean) {
+    override fun showButtonConnection(con: Boolean) {
         if (con) {
             showElements.buttonConnect.text = "Отключиться"
             showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green))
@@ -112,6 +100,20 @@ class MainActivity : AppCompatActivity() {
             showElements.textDataTerm.text = ">>> Данные\n"
         }
     }
+    override fun showDeviceName(deviceName: String) {
+        showElements.textDeviceName.text = deviceName
+    }
+    override fun withdrawalsShow(msg: String) {
+        showButtonConnection(false)
+        showAlertDialog(msg)
+    }
+    override fun printData(data: String) {
+        val termText: String = showElements.textDataTerm.text.toString()
+        showElements.textDataTerm.text = termText + data
+        showTermTextBottom()
+    }
+
+
     fun showAlertDialogChoiceDevices(msg: String, list: ArrayList<String>) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(msg)
@@ -144,22 +146,14 @@ class MainActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
     }
-    fun showReadData(data: String) {
-        val textTerm: String = showElements.textDataTerm.text.toString()
-        val message: String = "output>>>" + data
-        showElements.textDataTerm.text = textTerm + message
-        showTermTextBottom()
-    }
-    fun showDeviceName(deviceName: String) {
-        showElements.textDeviceName.text = deviceName
-    }
+
     fun showTermTextBottom() {
         showElements.scrollTermText.post {
             showElements.scrollTermText.fullScroll(View.FOCUS_DOWN)
         }
     }
 
-    private fun connectToUsbDevice(device: UsbDevice) {
+    override fun connectToUsbDevice(device: UsbDevice) {
         val usbManager: UsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
         try {
             val permissionIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -169,8 +163,8 @@ class MainActivity : AppCompatActivity() {
                 // Для Android ниже 12
                 PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), 0)
             }
-            //val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), 0)
             registerReceiver(usb.usbReceiver, IntentFilter(usb.ACTION_USB_PERMISSION))
+            isRestrierReceiver = true
             usbManager.requestPermission(device, permissionIntent)
         } catch (e: Exception) {
             showAlertDialog("При подключении произошла ошибка")
