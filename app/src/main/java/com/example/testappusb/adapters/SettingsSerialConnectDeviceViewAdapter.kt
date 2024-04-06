@@ -13,6 +13,7 @@ import com.example.testappusb.MainActivity
 import com.example.testappusb.R
 import com.example.testappusb.UsbActivityInterface
 import com.example.testappusb.model.SettingsSerialConnectDeviceView
+import com.example.testappusb.settings.ConstUsbSettings
 
 
 class SettingsSerialConnectDeviceViewAdapter(
@@ -53,17 +54,16 @@ class SettingsSerialConnectDeviceViewAdapter(
                             }
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 1) {
+                    holder.spinner.setSelection(ConstUsbSettings.deffoltPositionSpeed)
                     holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                             currentItem.selectedPosition = position
                             context.usb.onSerialSpeed(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 2) {
@@ -73,7 +73,6 @@ class SettingsSerialConnectDeviceViewAdapter(
                             context.usb.onSerialParity(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 3) {
@@ -82,7 +81,6 @@ class SettingsSerialConnectDeviceViewAdapter(
                             context.usb.onSerialStopBits(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 4) {
@@ -92,18 +90,15 @@ class SettingsSerialConnectDeviceViewAdapter(
                             context.usb.onSerialLineFeed(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 5) {
-                    holder
                     holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                             currentItem.selectedPosition = position
                             context.usb.onSerialLineFeedRead(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 6) {
@@ -113,7 +108,6 @@ class SettingsSerialConnectDeviceViewAdapter(
                             context.usb.onSerialDTR(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 } else if (position == 7) {
@@ -123,7 +117,6 @@ class SettingsSerialConnectDeviceViewAdapter(
                             context.usb.onSerialRTS(position)
                         }
                         override fun onNothingSelected(parent: AdapterView<*>) {
-
                         }
                     }
                 }

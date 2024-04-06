@@ -73,8 +73,8 @@ class Usb(val context: Context) {
 
     //private val dtr = false
     //private val rts = false
-    private var lineFeed = "\n"
-    private var lineFeedRead = "\n"
+    private var lineFeed = "\r"
+    private var lineFeedRead = "\r"
 
     var connection: UsbDeviceConnection? = null
     var deviceConnect: UsbDevice? = null
@@ -84,112 +84,99 @@ class Usb(val context: Context) {
     val executorUsb = Executors.newSingleThreadExecutor()
 
     fun onSelectUumBit(numBit: Boolean) {
-        executorUsb.execute {
-            ConstUsbSettings.numBit = numBit
-            usbSerialDevice?.let {
-                if (numBit) {
-                    usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
-                } else {
-                    usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_7)
-                }
+        ConstUsbSettings.numBit = numBit
+        usbSerialDevice?.let {
+            if (numBit) {
+                usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
+            } else {
+                usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_7)
             }
         }
-
     }
 
     fun onSerialSpeed(speedIndex: Int) {
-        executorUsb.execute {
-            ConstUsbSettings.speedIndex = speedIndex
-            val speedList: ArrayList<Int> =
-                arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200)
-            usbSerialDevice?.let {
-                if (speedList.size > speedIndex) {
-                    usbSerialDevice?.setBaudRate(speedList.get(speedIndex))
-                }
+        ConstUsbSettings.speedIndex = speedIndex
+        val speedList: ArrayList<Int> =
+            arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200)
+        usbSerialDevice?.let {
+            if (speedList.size > speedIndex) {
+                usbSerialDevice?.setBaudRate(speedList.get(speedIndex))
             }
         }
     }
 
     fun onSerialParity(parityIndex: Int) {
-        executorUsb.execute {
-            ConstUsbSettings.parityIndex = parityIndex
-            usbSerialDevice?.let {
-                if (parityIndex == 0) {
-                    usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
-                } else if (parityIndex == 1) {
-                    usbSerialDevice?.setParity(UsbSerialInterface.PARITY_EVEN)
-                } else if (parityIndex == 2) {
-                    usbSerialDevice?.setParity(UsbSerialInterface.PARITY_ODD)
-                } else {
+        ConstUsbSettings.parityIndex = parityIndex
+        usbSerialDevice?.let {
+            if (parityIndex == 0) {
+                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
+            } else if (parityIndex == 1) {
+                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_EVEN)
+            } else if (parityIndex == 2) {
+                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_ODD)
+            } else {
 
-                }
             }
         }
     }
 
     fun onSerialStopBits(stopBitsIndex: Int) {
-        executorUsb.execute {
-            ConstUsbSettings.stopBit = stopBitsIndex
-            usbSerialDevice?.let {
-                if (stopBitsIndex == 0) {
-                    usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
-                } else {
-                    usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_2)
-                }
+        ConstUsbSettings.stopBit = stopBitsIndex
+        usbSerialDevice?.let {
+            if (stopBitsIndex == 0) {
+                usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
+            } else {
+                usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_2)
             }
         }
     }
     fun onSerialLineFeed(lineFeedIndex: Int) {
-        executorUsb.execute {
-            if (lineFeedIndex == 0) {
-                lineFeed = "\r"
-            } else if (lineFeedIndex == 1) {
-                lineFeed = "\n"
-            } else if (lineFeedIndex == 2){
-                lineFeed = "\r\n"
-            } else {
-                lineFeed = "\n\r"
-            }
+        if (lineFeedIndex == 0) {
+            lineFeed = "\r"
+        } else if (lineFeedIndex == 1) {
+            lineFeed = "\n"
+        } else if (lineFeedIndex == 2){
+            lineFeed = "\r\n"
+        } else {
+            lineFeed = "\n\r"
         }
     }
     fun onSerialLineFeedRead(lineFeedIndex: Int) {
-        executorUsb.execute {
-            if (lineFeedIndex == 0) {
-                lineFeedRead = "\r"
-            } else if (lineFeedIndex == 1) {
-                lineFeedRead = "\n"
-            } else if (lineFeedIndex == 2){
-                lineFeedRead = "\r\n"
-            } else {
-                lineFeedRead = "\n\r"
-            }
+        if (lineFeedIndex == 0) {
+            lineFeedRead = "\r"
+        } else if (lineFeedIndex == 1) {
+            lineFeedRead = "\n"
+        } else if (lineFeedIndex == 2){
+            lineFeedRead = "\r\n"
+        } else {
+            lineFeedRead = "\n\r"
         }
     }
     fun onSerialDTR(IndexDTR: Int) {
-        executorUsb.execute {
-            ConstUsbSettings.dtr = IndexDTR
-            usbSerialDevice?.let {
-                if (IndexDTR == 0) {
-                    usbSerialDevice?.setDTR(false)
-                } else {
-                    usbSerialDevice?.setDTR(true)
-                }
+        ConstUsbSettings.dtr = IndexDTR
+        usbSerialDevice?.let {
+            if (IndexDTR == 0) {
+                usbSerialDevice?.setDTR(false)
+            } else {
+                usbSerialDevice?.setDTR(true)
             }
-
         }
     }
     fun onSerialRTS(IndexRTS: Int) {
-        executorUsb.execute {
-            ConstUsbSettings.rts = IndexRTS
-            usbSerialDevice?.let {
-                if (IndexRTS == 0) {
-                    usbSerialDevice?.setRTS(false)
-                } else {
-                    usbSerialDevice?.setRTS(true)
-                }
+        ConstUsbSettings.rts = IndexRTS
+        usbSerialDevice?.let {
+            if (IndexRTS == 0) {
+                usbSerialDevice?.setRTS(false)
+            } else {
+                usbSerialDevice?.setRTS(true)
             }
-
         }
+    }
+    fun onStartSerialSetting() {
+        onSelectUumBit(ConstUsbSettings.numBit)
+        onSerialSpeed(ConstUsbSettings.speedIndex)
+        onSerialParity(ConstUsbSettings.parityIndex)
+        onSerialStopBits(ConstUsbSettings.stopBit)
     }
 
     fun checkConnectToDevice(): Boolean {
@@ -270,13 +257,7 @@ class Usb(val context: Context) {
                                 usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(device, connection)
                                 usbSerialDevice?.open()
                                 deviceConnect = device
-                                onSelectUumBit(ConstUsbSettings.numBit)
-                                onSerialSpeed(ConstUsbSettings.speedIndex)
-                                onSerialParity(ConstUsbSettings.parityIndex)
-                                onSerialStopBits(ConstUsbSettings.stopBit)
-
-                                val bytesToSend = "Подключение произошло успешно\n\r".toByteArray()
-                                (usbSerialDevice as UsbSerialDevice).write(bytesToSend)
+                                onStartSerialSetting()
 
                                 (context as Activity).runOnUiThread {
                                     if (context is UsbActivityInterface) {

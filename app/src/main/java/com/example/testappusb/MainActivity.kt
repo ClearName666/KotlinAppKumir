@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showElements = ActivityMainBinding.inflate(getLayoutInflater())
@@ -93,7 +94,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         if (con) {
             showElements.buttonConnect.text = "Отключиться"
             showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green))
-
         } else {
             showElements.buttonConnect.text = "Подключить"
             showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.red))
