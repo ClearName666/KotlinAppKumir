@@ -35,20 +35,52 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // добавления выборки с настроками в горизонтальный скролл
         val settingsList = arrayListOf(
-            SettingsSerialConnectDeviceView(arrayListOf("число бит 8", "число бит 7")),
-            SettingsSerialConnectDeviceView(arrayListOf("скорость 300", "скорость 600", "скорость 1200", "скорость 2400", "скорость 4800", "скорость 9600", "скорость 19200", "скорость 38400", "скорость 57600", "скорость 115200")),
-            SettingsSerialConnectDeviceView(arrayListOf("четность None", "четность Even", "четность Odd")),
-            SettingsSerialConnectDeviceView(arrayListOf("стоп бит 1", "стоп бит 2")),
-            SettingsSerialConnectDeviceView(arrayListOf("перев. стр CR", "перев. стр LF", "перев. стр CRLF", "перев. стр LFCR")),
-            SettingsSerialConnectDeviceView(arrayListOf("прием перев. стр CR", "прием перев. стр LF", "прием перев. стр CRLF", "прием перев. стр LFCR")),
-            SettingsSerialConnectDeviceView(arrayListOf("DTR нет", "DTR да")),
-            SettingsSerialConnectDeviceView(arrayListOf("RTS нет", "RTS да"))
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "число бит 8",
+                "число бит 7")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "скорость 300",
+                "скорость 600",
+                "скорость 1200",
+                "скорость 2400",
+                "скорость 4800",
+                "скорость 9600",
+                "скорость 19200",
+                "скорость 38400",
+                "скорость 57600",
+                "скорость 115200")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "четность None",
+                "четность Even",
+                "четность Odd")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "стоп бит 1",
+                "стоп бит 2")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "перев. стр CR",
+                "перев. стр LF",
+                "перев. стр CRLF",
+                "перев. стр LFCR")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "прием перев. стр CR",
+                "прием перев. стр LF",
+                "прием перев. стр CRLF",
+                "прием перев. стр LFCR")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "DTR нет",
+                "DTR да")),
+            SettingsSerialConnectDeviceView(arrayListOf(
+                "RTS нет",
+                "RTS да"))
         )
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
         showElements.settingsRecyclerView.adapter = adapter
 
         // горизонтальное расположение элементов в скролинге настроек
-        showElements.settingsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        showElements.settingsRecyclerView.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false)
     }
 
     override fun onDestroy() {
@@ -74,7 +106,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 showAlertDialogChoiceDevices(nameDeviceList)
             } else {
                 showButtonConnection(false)
-                showAlertDialog("Устройство не обнаружено, подключите устройство")
+                showAlertDialog(getString(R.string.mainActivityText_NoneDevice))
             }
         } else {
             usb.onClear()
@@ -95,13 +127,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // функция для отображения статуса подключения к девайсу на кнопки
     override fun showButtonConnection(con: Boolean) {
         if (con) {
-            showElements.buttonConnect.text = "Отключиться"
-            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green))
+            showElements.buttonConnect.text = getString(R.string.mainActivityText_disconnect)
+            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.green))
         } else {
-            showElements.buttonConnect.text = "Подключить"
-            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.red))
+            showElements.buttonConnect.text = getString(R.string.mainActivityText_connect)
+            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.red))
 
-            showElements.textDataTerm.text = ">>> Данные\n"
+            showElements.textDataTerm.text = ""
         }
     }
     // отображения имени подключенного девайса
@@ -127,17 +161,25 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         try {
             val permissionIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 // Для Android 12 (API уровень 31)
-                PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE)
+                PendingIntent.getBroadcast(
+                    this,
+                    0,
+                    Intent(usb.ACTION_USB_PERMISSION),
+                    PendingIntent.FLAG_MUTABLE)
             } else {
                 // Для Android ниже 12
-                PendingIntent.getBroadcast(this, 0, Intent(usb.ACTION_USB_PERMISSION), 0)
+                PendingIntent.getBroadcast(
+                    this,
+                    0,
+                    Intent(usb.ACTION_USB_PERMISSION),
+                    0)
             }
 
             registerReceiver(usb.usbReceiver, IntentFilter(usb.ACTION_USB_PERMISSION))
             usbManager.requestPermission(device, permissionIntent)
 
         } catch (e: Exception) {
-            showAlertDialog("При подключении произошла ошибка")
+            showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
         }
     }
 
@@ -145,7 +187,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     // выборка к какому дивайсу подключиться
     private fun showAlertDialogChoiceDevices(list: ArrayList<String>) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Выберете устройство для подключения")
+        builder.setTitle(getString(R.string.mainActivityText_SubmitDevice))
 
         builder.setItems(list.toArray(arrayOfNulls<String>(list.size))) { _, which ->
 
@@ -157,11 +199,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
                 if (device.productName.toString() == list[which]) {
                     connectToUsbDevice(device)
                 } else {
-                    showAlertDialog("Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова")
+                    showAlertDialog(getString(R.string.mainActivityText_ExtractDevice))
                 }
 
             } catch (e: IndexOutOfBoundsException) {
-                showAlertDialog("Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова")
+                showAlertDialog(getString(R.string.mainActivityText_ExtractDevice))
             }
 
         }

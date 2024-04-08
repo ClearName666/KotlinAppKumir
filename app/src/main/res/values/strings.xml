@@ -2,8 +2,19 @@
     <string name="app_name">TestAppUsb</string>
     <string name="kumir">КУМИР</string>
     <string name="connect">Подключить</string>
-    <string name="termData"><![CDATA[>>> Данные\n]]></string>
     <string name="moveToData">Отправить</string>
     <string name="Text">Текст</string>
     <string name="test">Test</string>
+
+
+    <string name="mainActivityText_NoneDevice">Устройство не обнаружено, подключите устройство</string>
+    <string name="mainActivityText_disconnect">Отключиться</string>
+    <string name="mainActivityText_connect">Подключить</string>
+    <string name="mainActivityText_ErrorConnect">При подключении произошла ошибка</string>
+    <string name="mainActivityText_SubmitDevice">Выберете устройство для подключения</string>
+    <string name="mainActivityText_ExtractDevice">Устройство было извлечено из USB-порта. Пожалуйста, подключите его снова</string>
+    <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
+    <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
+    <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
+
 </resources>

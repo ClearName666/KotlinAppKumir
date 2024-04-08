@@ -21,7 +21,8 @@ class Usb(private val context: Context) {
     companion object {
         const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
 
-        val speedList: ArrayList<Int> = arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
+        val speedList: ArrayList<Int> = arrayListOf(
+            300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
     }
 
     // переводы строк
@@ -185,7 +186,7 @@ class Usb(private val context: Context) {
         executorUsb.execute {
             try {
                 if (usbSerialDevice == null) {
-                    printWithdrawalsShow("Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ")
+                    printWithdrawalsShow(context.getString(R.string.Usb_NoneConnect))
                 } else {
                     val bytesToSend = (message + lineFeed).toByteArray()
                     usbSerialDevice?.write(bytesToSend)
@@ -193,7 +194,7 @@ class Usb(private val context: Context) {
                     printUIThread("input>>>$message$lineFeed")
                 }
             } catch (e: Exception) {
-                printWithdrawalsShow("Ошибка отправки данных ${e.message}")
+                printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")
             }
         }
     }
@@ -229,7 +230,8 @@ class Usb(private val context: Context) {
                         connection = usbManager?.openDevice(device)
                         if (connection != null) {
                             try {
-                                usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(device, connection)
+                                usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(
+                                    device, connection)
                                 usbSerialDevice?.open()
 
                                 (context as Activity).runOnUiThread {
@@ -243,7 +245,9 @@ class Usb(private val context: Context) {
                                 usbSerialDevice?.let {
                                     if (it.open()) {
                                         val readCallback = UsbReadCallback { bytes ->
-                                            printUIThread("output>>>" + String(bytes, Charsets.UTF_8) + lineFeedRead)
+                                            printUIThread("output>>>" + String(
+                                                bytes,
+                                                Charsets.UTF_8) + lineFeedRead)
                                         }
 
                                         it.read(readCallback)
@@ -256,7 +260,7 @@ class Usb(private val context: Context) {
                                 onStartSerialSetting()
 
                             } catch (e: IOException) {
-                                printWithdrawalsShow("Произошла ошибка при попытки подключения")
+                                printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
 
                                 onClear()
                             }

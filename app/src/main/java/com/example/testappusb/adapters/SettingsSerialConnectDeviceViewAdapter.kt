@@ -18,11 +18,9 @@ class SettingsSerialConnectDeviceViewAdapter(
     private val list: ArrayList<SettingsSerialConnectDeviceView>
 ) : RecyclerView.Adapter<SettingsSerialConnectDeviceViewAdapter.SettingsSerialConnectDeviceViewHolder>(){
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): SettingsSerialConnectDeviceViewHolder {
-        val itemView: View = LayoutInflater.from(context).inflate(R.layout.recycler_settings_serial, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsSerialConnectDeviceViewHolder {
+        val itemView: View = LayoutInflater.from(context).inflate(R.layout.recycler_settings_serial,
+            parent, false)
         return SettingsSerialConnectDeviceViewHolder(itemView)
     }
 
