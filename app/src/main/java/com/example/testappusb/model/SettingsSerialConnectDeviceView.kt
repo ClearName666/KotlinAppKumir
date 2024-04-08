@@ -1,5 +1,5 @@
 package com.example.testappusb.model
 
-class SettingsSerialConnectDeviceView(var list: ArrayList<String>?) {
+class SettingsSerialConnectDeviceView(var firstText: String, var list: ArrayList<String>?) {
     var selectedPosition: Int = 0
 }

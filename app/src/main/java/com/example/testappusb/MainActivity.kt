@@ -15,17 +15,26 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.testappusb.adapters.SaveTextCommandViewAdapter
 import com.example.testappusb.adapters.SettingsSerialConnectDeviceViewAdapter
 import com.example.testappusb.databinding.ActivityMainBinding
+import com.example.testappusb.model.SaveTextCommandView
 import com.example.testappusb.model.SettingsSerialConnectDeviceView
 
 //  SERIAL TERMENALL серийный терминалл
-class MainActivity : AppCompatActivity(), UsbActivityInterface {
+class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextSet {
+
+
+    companion object {
+        const val TIMEOUT_TEXT_COMMAND_SAVE_UPDATE: Long = 100
+    }
 
     private lateinit var showElements: ActivityMainBinding
 
     override val usb: Usb = Usb(this)
 
+    private val setTextSaveComand: MutableSet<String> = mutableSetOf()
+    private var flagUpdateTextSaveCommands: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,43 +44,20 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
 
         // добавления выборки с настроками в горизонтальный скролл
         val settingsList = arrayListOf(
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "число бит 8",
-                "число бит 7")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "скорость 300",
-                "скорость 600",
-                "скорость 1200",
-                "скорость 2400",
-                "скорость 4800",
-                "скорость 9600",
-                "скорость 19200",
-                "скорость 38400",
-                "скорость 57600",
-                "скорость 115200")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "четность None",
-                "четность Even",
-                "четность Odd")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "стоп бит 1",
-                "стоп бит 2")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "перев. стр CR",
-                "перев. стр LF",
-                "перев. стр CRLF",
-                "перев. стр LFCR")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "прием перев. стр CR",
-                "прием перев. стр LF",
-                "прием перев. стр CRLF",
-                "прием перев. стр LFCR")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "DTR нет",
-                "DTR да")),
-            SettingsSerialConnectDeviceView(arrayListOf(
-                "RTS нет",
-                "RTS да"))
+            SettingsSerialConnectDeviceView("число бит", arrayListOf("8", "7")),
+            SettingsSerialConnectDeviceView("скорость", arrayListOf(
+                "300", "600", "1200", "2400", "4800",
+                "9600", "19200", "38400", "57600", "115200")),
+            SettingsSerialConnectDeviceView("четность", arrayListOf("None", "Even", "Odd")),
+            SettingsSerialConnectDeviceView("стоп бит", arrayListOf("1", "2")),
+            SettingsSerialConnectDeviceView("перев. стр", arrayListOf(
+                "CR", "LF",
+                "CRLF", "LFCR")),
+            SettingsSerialConnectDeviceView("прием перев. стр", arrayListOf(
+                "CR", "LF",
+                "CRLF", "LFCR")),
+            SettingsSerialConnectDeviceView("DTR", arrayListOf("нет", "да")),
+            SettingsSerialConnectDeviceView("RTS", arrayListOf("нет", "да"))
         )
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
         showElements.settingsRecyclerView.adapter = adapter
@@ -81,9 +67,34 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
             this,
             LinearLayoutManager.HORIZONTAL,
             false)
+
+        showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
+
+        Thread {
+            var sizeItem: Int = 0
+            val textSaveComandList: ArrayList<SaveTextCommandView> = arrayListOf()
+
+            while (flagUpdateTextSaveCommands) {
+                Thread.sleep(TIMEOUT_TEXT_COMMAND_SAVE_UPDATE)
+
+                if (sizeItem != setTextSaveComand.size) {
+                    runOnUiThread {
+                        textSaveComandList.add(SaveTextCommandView(setTextSaveComand.last()))
+
+                        val adapterSaveTextComand = SaveTextCommandViewAdapter(this, textSaveComandList)
+                        showElements.historyScrollComandText.adapter = adapterSaveTextComand
+                    }
+                    sizeItem++
+                }
+            }
+        }.start()
+
+
+
     }
 
     override fun onDestroy() {
+        flagUpdateTextSaveCommands = false
         usb.onDestroy() // уничтожение обекта usb
         super.onDestroy()
     }
@@ -117,6 +128,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
     fun onClickButtonMoveToData(view: View) {
         val textIn: String = showElements.textInputDataForMoveToData.text.toString()
         if (textIn.isNotEmpty()) {
+            setTextSaveComand.add(textIn)
+
             showElements.textInputDataForMoveToData.setText("")
 
             usb.writeDevice(textIn)
@@ -232,8 +245,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface {
         }
     }
 
-
-
+    // установка текста в инпуте ввода команд
+    override fun setTextFromButton(text: String) {
+        showElements.textInputDataForMoveToData.setText(text)
+    }
 
 
 }

@@ -29,7 +29,7 @@ class SettingsSerialConnectDeviceViewAdapter(
     override fun onBindViewHolder(holder: SettingsSerialConnectDeviceViewHolder, position: Int) {
         val currentItem = list[position]
         currentItem.list?.let { list ->
-            val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list)
+            val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list.map {"${currentItem.firstText} $it"}.toArrayList())
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             holder.spinner.adapter = adapter
@@ -70,6 +70,10 @@ class SettingsSerialConnectDeviceViewAdapter(
 
     class SettingsSerialConnectDeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val spinner: Spinner = itemView.findViewById(R.id.itemSpinnerSetting)
+    }
+
+    private fun <T> List<T>.toArrayList(): ArrayList<T> {
+        return ArrayList(this)
     }
 }
 
