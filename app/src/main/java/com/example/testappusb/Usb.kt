@@ -12,192 +12,160 @@ import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
 import java.io.IOException
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class Usb(val context: Context) {
+class Usb(private val context: Context) {
 
     val ACTION_USB_PERMISSION: String = "com.android.example.USB_PERMISSION"
-    /*companion object {
+    companion object {
+        const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
 
-        private const val TAG_APP: String = "TEST_LOG"
+        val speedList: ArrayList<Int> = arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
+    }
 
-
-
-        const val USB_WRITE_TIMEOUT_MILLIS = 5000
-
-        const val BUFFER_READ = 10240
-        const val TIMEOUT_READ = 500
-
-        /*
-         * Configuration Request Types
-         */
-        const val REQTYPE_HOST_TO_DEVICE = 0x41
-        const val REQTYPE_DEVICE_TO_HOST = 0xc1
-
-        /*
-         * Configuration Request Codes
-         */
-        const val SILABSER_IFC_ENABLE_REQUEST_CODE = 0x00
-        const val SILABSER_SET_LINE_CTL_REQUEST_CODE = 0x03
-        const val SILABSER_SET_BREAK_REQUEST_CODE = 0x05
-        const val SILABSER_SET_MHS_REQUEST_CODE = 0x07
-        const val SILABSER_SET_BAUDRATE = 0x1E
-        const val SILABSER_FLUSH_REQUEST_CODE = 0x12
-        const val SILABSER_GET_MDMSTS_REQUEST_CODE = 0x08
-
-        const val FLUSH_READ_CODE = 0x0a
-        const val FLUSH_WRITE_CODE = 0x05
-
-        /*
-         * SILABSER_IFC_ENABLE_REQUEST_CODE
-         */
-        const val UART_ENABLE = 0x0001
-        const val UART_DISABLE = 0x0000
-
-        /*
-         * SILABSER_SET_MHS_REQUEST_CODE
-         */
-        const val DTR_ENABLE = 0x101
-        const val DTR_DISABLE = 0x100
-        const val RTS_ENABLE = 0x202
-        const val RTS_DISABLE = 0x200
-
-        /*
-         * SILABSER_GET_MDMSTS_REQUEST_CODE
-         */
-        const val STATUS_CTS = 0x10
-        const val STATUS_DSR = 0x20
-        const val STATUS_RI = 0x40
-        const val STATUS_CD = 0x80
-    }*/
-
-    //private val dtr = false
-    //private val rts = false
+    // переводы строк
     private var lineFeed = "\r"
     private var lineFeedRead = "\r"
 
-    var connection: UsbDeviceConnection? = null
-    var deviceConnect: UsbDevice? = null
-    var usbSerialDevice: UsbSerialDevice? = null
 
+    private var connection: UsbDeviceConnection? = null
+    private var usbSerialDevice: UsbSerialDevice? = null
+    private var deviceName: String? = null
 
-    val executorUsb = Executors.newSingleThreadExecutor()
+    // поток для usb
+    private val executorUsb: ExecutorService = Executors.newSingleThreadExecutor()
 
+    // настрока сериал порта <ЧИСЛО БИТ>
     fun onSelectUumBit(numBit: Boolean) {
         ConstUsbSettings.numBit = numBit
+
         usbSerialDevice?.let {
-            if (numBit) {
-                usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
-            } else {
-                usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_7)
+            when (numBit) {
+                true -> usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
+                false -> usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_7)
             }
         }
     }
 
+    // настрока сериал порта <СКОРОСТЬ В БОДАХ>
     fun onSerialSpeed(speedIndex: Int) {
         ConstUsbSettings.speedIndex = speedIndex
-        val speedList: ArrayList<Int> =
-            arrayListOf(300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200)
+
         usbSerialDevice?.let {
             if (speedList.size > speedIndex) {
-                usbSerialDevice?.setBaudRate(speedList.get(speedIndex))
+                usbSerialDevice?.setBaudRate(speedList[speedIndex])
             }
         }
     }
 
+    // настрока сериал порта <ЧЕТНОСТЬ>
     fun onSerialParity(parityIndex: Int) {
         ConstUsbSettings.parityIndex = parityIndex
-        usbSerialDevice?.let {
-            if (parityIndex == 0) {
-                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
-            } else if (parityIndex == 1) {
-                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_EVEN)
-            } else if (parityIndex == 2) {
-                usbSerialDevice?.setParity(UsbSerialInterface.PARITY_ODD)
-            } else {
 
+        usbSerialDevice?.let {
+            when (parityIndex) {
+                0 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
+                1 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_EVEN)
+                2 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_ODD)
+                else -> {}
             }
         }
     }
 
+    // настрока сериал порта <СТОП БИТЫ>
     fun onSerialStopBits(stopBitsIndex: Int) {
         ConstUsbSettings.stopBit = stopBitsIndex
+
         usbSerialDevice?.let {
-            if (stopBitsIndex == 0) {
-                usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
-            } else {
-                usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_2)
+            when (stopBitsIndex) {
+                0 -> usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
+                1 -> usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_2)
+                else -> {}
             }
         }
     }
+
+    // настрока перевода строки при отправки данных
     fun onSerialLineFeed(lineFeedIndex: Int) {
-        if (lineFeedIndex == 0) {
-            lineFeed = "\r"
-        } else if (lineFeedIndex == 1) {
-            lineFeed = "\n"
-        } else if (lineFeedIndex == 2){
-            lineFeed = "\r\n"
-        } else {
-            lineFeed = "\n\r"
+        when (lineFeedIndex) {
+            0 -> lineFeed = "\r"
+            1 -> lineFeed = "\n"
+            2 -> lineFeed = "\r\n"
+            3 -> lineFeed = "\n\r"
+            else -> {}
         }
     }
+
+    // настрока перевода строки при получении данных
     fun onSerialLineFeedRead(lineFeedIndex: Int) {
-        if (lineFeedIndex == 0) {
-            lineFeedRead = "\r"
-        } else if (lineFeedIndex == 1) {
-            lineFeedRead = "\n"
-        } else if (lineFeedIndex == 2){
-            lineFeedRead = "\r\n"
-        } else {
-            lineFeedRead = "\n\r"
+        when (lineFeedIndex) {
+            0 -> lineFeedRead = "\r"
+            1 -> lineFeedRead = "\n"
+            2 -> lineFeedRead = "\r\n"
+            3 -> lineFeedRead = "\n\r"
         }
     }
-    fun onSerialDTR(IndexDTR: Int) {
-        ConstUsbSettings.dtr = IndexDTR
+
+    // настрока сериал порта <DTR>
+    fun onSerialDTR(indexDTR: Int) {
+        ConstUsbSettings.dtr = indexDTR
+
         usbSerialDevice?.let {
-            if (IndexDTR == 0) {
-                usbSerialDevice?.setDTR(false)
-            } else {
-                usbSerialDevice?.setDTR(true)
+            when (indexDTR) {
+                0 -> usbSerialDevice?.setDTR(false)
+                1 -> usbSerialDevice?.setDTR(true)
+                else -> {}
             }
         }
     }
-    fun onSerialRTS(IndexRTS: Int) {
-        ConstUsbSettings.rts = IndexRTS
+
+    // настрока сериал порта <RTS>
+    fun onSerialRTS(indexRTS: Int) {
+        ConstUsbSettings.rts = indexRTS
+
         usbSerialDevice?.let {
-            if (IndexRTS == 0) {
-                usbSerialDevice?.setRTS(false)
-            } else {
-                usbSerialDevice?.setRTS(true)
+            when (indexRTS) {
+                0 -> usbSerialDevice?.setRTS(false)
+                1 -> usbSerialDevice?.setRTS(true)
+                else -> {}
             }
         }
     }
+
+    // настройка серийного порта при подключении
     fun onStartSerialSetting() {
         onSelectUumBit(ConstUsbSettings.numBit)
         onSerialSpeed(ConstUsbSettings.speedIndex)
         onSerialParity(ConstUsbSettings.parityIndex)
         onSerialStopBits(ConstUsbSettings.stopBit)
+        onSerialRTS(ConstUsbSettings.rts)
+        onSerialDTR(ConstUsbSettings.dtr)
     }
 
+
+    // проверка подклюения девайса к устройству
     fun checkConnectToDevice(): Boolean {
         if (context is UsbActivityInterface) {
             val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
+
             for (device in devises) {
-                if (device.value.deviceName == deviceConnect?.deviceName) {
+                if (device.value.deviceName == deviceName) {
                     return true
                 }
             }
         }
-        onDestroy()
+        onClear()
         return false
     }
-    fun onDestroy() {
+    // очищение ресурсов после отклчения диваса
+    fun onClear() {
         connection?.close()
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
-        deviceConnect = null
+        deviceName = null
         if (context is UsbActivityInterface) {
             (context as Activity).runOnUiThread {
                 context.showButtonConnection(false)
@@ -205,32 +173,32 @@ class Usb(val context: Context) {
             }
         }
     }
+    // удаление всего что связано с usb
+    fun onDestroy() {
+        context.unregisterReceiver(usbReceiver)
+        onClear()
+        executorUsb.shutdown()
+    }
 
-    fun useToConnectToDivice(message: String) {
+    // отправка данных в сериал порт
+    fun writeDevice(message: String) {
         executorUsb.execute {
             try {
                 if (usbSerialDevice == null) {
-                    if (context is UsbActivityInterface) {
-                        (context as Activity).runOnUiThread {
-                            context.withdrawalsShow("Нету подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ")
-                        }
-                    }
-
+                    printWithdrawalsShow("Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ")
                 } else {
                     val bytesToSend = (message + lineFeed).toByteArray()
                     usbSerialDevice?.write(bytesToSend)
-                    printUIThread("input>>>" + message + lineFeed)
+
+                    printUIThread("input>>>$message$lineFeed")
                 }
             } catch (e: Exception) {
-                if (context is UsbActivityInterface) {
-                    (context as Activity).runOnUiThread {
-                        context.withdrawalsShow("В разрешении на устройство было отказано, подключите устройство, что бы разрешить и взаимодействовать с ним")
-                    }
-                }
+                printWithdrawalsShow("Ошибка отправки данных ${e.message}")
             }
         }
     }
 
+    // отправка полученных и отправленых данных в ui радительский поток
     private fun printUIThread(msg: String) {
         if (context is UsbActivityInterface) {
             (context as Activity).runOnUiThread {
@@ -238,57 +206,75 @@ class Usb(val context: Context) {
             }
         }
     }
+    // отправка сообщений в ui радительский поток
+    private fun printWithdrawalsShow(msg: String) {
+        if (context is UsbActivityInterface) {
+            (context as Activity).runOnUiThread {
+                context.withdrawalsShow(msg)
+            }
+        }
+    }
 
+    // регистрация широковещятельного приемника
     val usbReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_USB_PERMISSION) {
-                usbSerialDevice?.close()
+
                 val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
                 val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                    if (context is UsbActivityInterface) {
-                        context.showButtonConnection(true)
-                    }
-                    device?.apply {
 
+                // если есть разрешение на использования устройства
+                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                    device?.apply {
                         connection = usbManager?.openDevice(device)
                         if (connection != null) {
                             try {
                                 usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(device, connection)
                                 usbSerialDevice?.open()
-                                deviceConnect = device
-                                onStartSerialSetting()
 
                                 (context as Activity).runOnUiThread {
                                     if (context is UsbActivityInterface) {
                                         context.showDeviceName(device.productName.toString())
                                     }
                                 }
-                                Thread {
-                                    if (context is UsbActivityInterface) {
-                                        while (checkConnectToDevice()) {}
-                                    }
-                                }.start()
+
+
+
                                 usbSerialDevice?.let {
                                     if (it.open()) {
                                         val readCallback = UsbReadCallback { bytes ->
-                                            val receivedData: String = String(bytes, Charsets.UTF_8)
-                                            printUIThread("output>>>" + receivedData + lineFeedRead)
+                                            printUIThread("output>>>" + String(bytes, Charsets.UTF_8) + lineFeedRead)
                                         }
+
                                         it.read(readCallback)
                                     }
                                 }
-                            } catch (e: IOException) {
                                 if (context is UsbActivityInterface) {
-                                    (context as Activity).runOnUiThread {
-                                        context.withdrawalsShow("Произошла ошибка при попытки подключения")
-                                    }
+                                    context.showButtonConnection(true)
                                 }
-                                onDestroy()
+
+                                onStartSerialSetting()
+
+                            } catch (e: IOException) {
+                                printWithdrawalsShow("Произошла ошибка при попытки подключения")
+
+                                onClear()
                             }
 
                         }
                     }
+
+                    deviceName = device?.deviceName.toString()
+
+                    // постоянная проверка подключения к устройству
+                    Thread {
+                        if (context is UsbActivityInterface) {
+                            while (checkConnectToDevice()) {
+                                Thread.sleep(TIMEOUT_CHECK_CONNECT)
+                            }
+                        }
+                    }.start()
+
                 }
             }
         }

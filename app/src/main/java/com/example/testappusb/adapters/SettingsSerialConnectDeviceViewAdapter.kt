@@ -1,7 +1,6 @@
 package com.example.testappusb.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +8,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testappusb.MainActivity
 import com.example.testappusb.R
 import com.example.testappusb.UsbActivityInterface
 import com.example.testappusb.model.SettingsSerialConnectDeviceView
-import com.example.testappusb.settings.ConstUsbSettings
 
 
 class SettingsSerialConnectDeviceViewAdapter(
@@ -21,7 +18,6 @@ class SettingsSerialConnectDeviceViewAdapter(
     private val list: ArrayList<SettingsSerialConnectDeviceView>
 ) : RecyclerView.Adapter<SettingsSerialConnectDeviceViewAdapter.SettingsSerialConnectDeviceViewHolder>(){
 
-    //public var listSpinner: ArrayList<Spinner> = arrayListOf()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -37,87 +33,37 @@ class SettingsSerialConnectDeviceViewAdapter(
         currentItem.list?.let { list ->
             val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
             holder.spinner.adapter = adapter
             holder.spinner.setSelection(currentItem.selectedPosition)
-            //listSpinner.add(holder.spinner)
+
             if (context is UsbActivityInterface) {
-                if (position == 0) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            if (position == 0) {
-                                context.usb.onSelectUumBit(true)
-                                //Log.d("SetCon", "число бит 8")
-                            } else {
-                                context.usb.onSelectUumBit(false)
-                                //Log.d("SetCon", "число бит 7")
+
+                val positionElemItems: Int = position
+
+                holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                        currentItem.selectedPosition = position
+                        when (positionElemItems) {
+                            0 -> {
+                                when (position) {
+                                    0 -> context.usb.onSelectUumBit(true)
+                                    1 -> context.usb.onSelectUumBit(false)
+                                    else -> {}
+                                }
                             }
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 1) {
-                    holder.spinner.setSelection(ConstUsbSettings.deffoltPositionSpeed)
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialSpeed(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
+                            1 -> context.usb.onSerialSpeed(position)
+                            2 -> context.usb.onSerialParity(position)
+                            3 -> context.usb.onSerialStopBits(position)
+                            4 -> context.usb.onSerialLineFeed(position)
+                            5 -> context.usb.onSerialLineFeedRead(position)
+                            6 -> context.usb.onSerialDTR(position)
+                            7 -> context.usb.onSerialRTS(position)
+
                         }
                     }
-                } else if (position == 2) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialParity(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 3) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            context.usb.onSerialStopBits(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 4) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialLineFeed(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 5) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialLineFeedRead(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 6) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialDTR(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
-                    }
-                } else if (position == 7) {
-                    holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                            currentItem.selectedPosition = position
-                            context.usb.onSerialRTS(position)
-                        }
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                        }
+                    override fun onNothingSelected(parent: AdapterView<*>) {
+
                     }
                 }
             }

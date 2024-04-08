@@ -4,7 +4,6 @@ class ConstUsbSettings {
     companion object {
         var numBit: Boolean = true
         var speedIndex: Int = 0
-        var deffoltPositionSpeed = 5 // 9600 бод
         var parityIndex: Int = 0
         var stopBit: Int = 0
         var dtr: Int = 0
