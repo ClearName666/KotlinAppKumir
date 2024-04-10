@@ -20,21 +20,22 @@ import com.example.testappusb.adapters.SettingsSerialConnectDeviceViewAdapter
 import com.example.testappusb.databinding.ActivityMainBinding
 import com.example.testappusb.model.SaveTextCommandView
 import com.example.testappusb.model.SettingsSerialConnectDeviceView
+import com.example.testappusb.settings.ComandsHintForTerm
 
 //  SERIAL TERMENALL серийный терминалл
 class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextSet {
 
 
     companion object {
-        const val TIMEOUT_TEXT_COMMAND_SAVE_UPDATE: Long = 100
+        const val TIMEOUT_TEXT_COMMAND_SAVE_UPDATE: Long = 200
     }
 
     private lateinit var showElements: ActivityMainBinding
 
     override val usb: Usb = Usb(this)
 
-    private val setTextSaveComand: MutableSet<String> = mutableSetOf()
-    private var flagUpdateTextSaveCommands: Boolean = true
+    private var flagWorkTextSaveCommands: Boolean = true
+    private var curentTextForTermInput: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,32 +70,42 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             false)
 
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
+        ComandsHintForTerm.lisComand = arrayListOf("at", "at\$view")
 
+        // поток для обновления подсказок команд
         Thread {
-            var sizeItem: Int = 0
-            val textSaveComandList: ArrayList<SaveTextCommandView> = arrayListOf()
-
-            while (flagUpdateTextSaveCommands) {
+            while (flagWorkTextSaveCommands) {
                 Thread.sleep(TIMEOUT_TEXT_COMMAND_SAVE_UPDATE)
 
-                if (sizeItem != setTextSaveComand.size) {
-                    runOnUiThread {
-                        textSaveComandList.add(SaveTextCommandView(setTextSaveComand.last()))
+                val startText: String = showElements.textInputDataForMoveToData.text.toString()
+                // если что то изменилось в инпуте текста
+                if (curentTextForTermInput != startText) {
+                    var listSaveTextCommandView: ArrayList<SaveTextCommandView> = arrayListOf()
 
-                        val adapterSaveTextComand = SaveTextCommandViewAdapter(this, textSaveComandList)
-                        showElements.historyScrollComandText.adapter = adapterSaveTextComand
+                    // отсартировака команд по началу команды введенной пользователем
+                    if (startText.isNotEmpty()) {
+                        val listHint: List<String> = ComandsHintForTerm.lisComand.filter {
+                            it.startsWith(startText) && it != startText
+                        }
+                        listSaveTextCommandView = ArrayList(listHint.map {
+                            SaveTextCommandView(it)
+                        })
                     }
-                    sizeItem++
+
+                    runOnUiThread {
+                        val adapterSaveTextCommand = SaveTextCommandViewAdapter(this, listSaveTextCommandView)
+                        showElements.historyScrollComandText.adapter = adapterSaveTextCommand
+                        curentTextForTermInput = startText
+                    }
                 }
+
             }
         }.start()
-
-
 
     }
 
     override fun onDestroy() {
-        flagUpdateTextSaveCommands = false
+        flagWorkTextSaveCommands = false
         usb.onDestroy() // уничтожение обекта usb
         super.onDestroy()
     }
@@ -128,12 +139,17 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     fun onClickButtonMoveToData(view: View) {
         val textIn: String = showElements.textInputDataForMoveToData.text.toString()
         if (textIn.isNotEmpty()) {
-            setTextSaveComand.add(textIn)
 
             showElements.textInputDataForMoveToData.setText("")
 
             usb.writeDevice(textIn)
         }
+    }
+
+    // функция для кнопки с установкой пакета команд помошника
+    fun onClickButtonMoveToSettings(view: View) {
+        val i = Intent(this, SaveTextCommandView::class.java)
+        startActivity(i)
     }
 
 
