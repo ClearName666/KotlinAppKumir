@@ -16,5 +16,8 @@
     <string name="Usb_NoneConnect">Отсутствует подключения, воспользуйтесь кнопкой ПОДКЛЮЧИТЬСЯ</string>
     <string name="Usb_ErrorWriteData">Ошибка отправки данных</string>
     <string name="Usb_ErrorConnect">Произошла ошибка при попытки подключения</string>
+    <string name="title_activity_setting_command_hint">SettingCommandHintActivity</string>
+    <string name="add">Добавить</string>
+    <string name="returner">Вернуться</string>
 
 </resources>

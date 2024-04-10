@@ -148,8 +148,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
     // функция для кнопки с установкой пакета команд помошника
     fun onClickButtonMoveToSettings(view: View) {
-        val i = Intent(this, SaveTextCommandView::class.java)
+        val i = Intent(this, SettingCommandHintActivity::class.java)
         startActivity(i)
+    }
+
+    // функция для кнопки с тчисткой терминала
+    fun inClickButtonClearTerm(view: View) {
+        showElements.textDataTerm.text = ""
     }
 
 
