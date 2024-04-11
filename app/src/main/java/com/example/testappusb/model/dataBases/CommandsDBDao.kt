@@ -1,4 +1,4 @@
-package com.example.testappusb.model
+package com.example.testappusb.model.dataBase.commandsDB
 
 import androidx.room.Dao
 import androidx.room.Delete
