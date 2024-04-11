@@ -1,4 +1,4 @@
-package com.example.testappusb.model.dataBase.commandsDB
+package com.example.testappusb.model.dataBases
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -16,4 +16,7 @@ interface CommandsDBDao {
 
     @Delete
     fun delete(commandsDB: CommandsDB)
+
+    @Query("SELECT COUNT(id) FROM commandsdb")
+    fun getCount(): Int
 }

@@ -39,8 +39,9 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/itemsSetHint"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="690dp" />
         </LinearLayout>
     </ScrollView>
 

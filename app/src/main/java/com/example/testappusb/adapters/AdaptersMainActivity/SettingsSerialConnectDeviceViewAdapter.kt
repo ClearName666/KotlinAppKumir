@@ -1,4 +1,4 @@
-package com.example.testappusb.adapters
+package com.example.testappusb.adapters.AdaptersMainActivity
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,10 +9,12 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testappusb.R
-import com.example.testappusb.UsbActivityInterface
-import com.example.testappusb.model.SettingsSerialConnectDeviceView
+import com.example.testappusb.usb.UsbActivityInterface
+import com.example.testappusb.model.recyclerModelForMainActivity.SettingsSerialConnectDeviceView
 
 
+
+// адаптер для вывода настроек подключения SerialUsb
 class SettingsSerialConnectDeviceViewAdapter(
     private val context: Context,
     private val list: ArrayList<SettingsSerialConnectDeviceView>
@@ -29,7 +31,10 @@ class SettingsSerialConnectDeviceViewAdapter(
     override fun onBindViewHolder(holder: SettingsSerialConnectDeviceViewHolder, position: Int) {
         val currentItem = list[position]
         currentItem.list?.let { list ->
-            val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list.map {"${currentItem.firstText} $it"}.toArrayList())
+            // адаптер для поля выбора spinner берет начало текста и соединяет с каждым эл листа выбора настроек
+            val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list.map {
+                "${currentItem.firstText} $it"
+            }.toArrayList())
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             holder.spinner.adapter = adapter
@@ -39,9 +44,13 @@ class SettingsSerialConnectDeviceViewAdapter(
 
                 val positionElemItems: Int = position
 
+                // слушатель для spinner зависет от id элемента recycler для каждой свой метод в классе usb
                 holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                        // сохренение позиции для корректной перерисовки
                         currentItem.selectedPosition = position
+
+                        // настроки для Serial порта
                         when (positionElemItems) {
                             0 -> {
                                 when (position) {

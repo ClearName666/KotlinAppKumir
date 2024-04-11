@@ -1,4 +1,4 @@
-package com.example.testappusb.model.dataBase.commandsDB
+package com.example.testappusb.model.dataBases
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

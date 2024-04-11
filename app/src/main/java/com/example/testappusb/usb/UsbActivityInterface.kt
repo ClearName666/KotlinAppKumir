@@ -1,4 +1,4 @@
-package com.example.testappusb
+package com.example.testappusb.usb
 
 import android.hardware.usb.UsbDevice
 

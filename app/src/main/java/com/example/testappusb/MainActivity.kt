@@ -15,12 +15,14 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.testappusb.adapters.SaveTextCommandViewAdapter
-import com.example.testappusb.adapters.SettingsSerialConnectDeviceViewAdapter
+import com.example.testappusb.adapters.AdaptersMainActivity.SaveTextCommandViewAdapter
+import com.example.testappusb.adapters.AdaptersMainActivity.SettingsSerialConnectDeviceViewAdapter
 import com.example.testappusb.databinding.ActivityMainBinding
-import com.example.testappusb.model.SaveTextCommandView
-import com.example.testappusb.model.SettingsSerialConnectDeviceView
+import com.example.testappusb.model.recyclerModelForMainActivity.SaveTextCommandView
+import com.example.testappusb.model.recyclerModelForMainActivity.SettingsSerialConnectDeviceView
 import com.example.testappusb.settings.ComandsHintForTerm
+import com.example.testappusb.usb.Usb
+import com.example.testappusb.usb.UsbActivityInterface
 
 //  SERIAL TERMENALL серийный терминалл
 class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextSet {
@@ -70,10 +72,14 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             false)
 
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
-        ComandsHintForTerm.lisComand = arrayListOf("at", "at\$view")
+
+
 
         // поток для обновления подсказок команд
         Thread {
+            // получаем данные из файла с активными подсказками команд
+            ComandsHintForTerm.loadFromFile(this)
+
             while (flagWorkTextSaveCommands) {
                 Thread.sleep(TIMEOUT_TEXT_COMMAND_SAVE_UPDATE)
 
@@ -102,6 +108,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             }
         }.start()
 
+    }
+
+    override fun onRestart() {
+        ComandsHintForTerm.loadFromFile(this)
+        super.onRestart()
     }
 
     override fun onDestroy() {

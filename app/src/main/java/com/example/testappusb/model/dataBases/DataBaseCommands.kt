@@ -1,6 +1,7 @@
-package com.example.testappusb.model.dataBase.commandsDB
+package com.example.testappusb.model.dataBases
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -17,23 +18,6 @@ abstract class DataBaseCommands : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: DataBaseCommands? = null
-
-        // Коллбек для начального заполнения базы данных
-        private val roomCallback = object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                // Запуск в фоновом потоке
-                Executors.newSingleThreadExecutor().execute {
-                    // добавление встроеных подсказок из ConstDataStartHintForDataBaseCommands
-                    INSTANCE?.commandsDBDao()?.insertAll(
-                        CommandsDB(
-                        1,
-                        ConstDataStartHintForDataBaseCommands.m32GsmModemList,
-                        ConstDataStartHintForDataBaseCommands.m32GsmModemName)
-                    )
-                }
-            }
-        }
 
         fun getDatabase(context: Context): DataBaseCommands {
             return INSTANCE ?: synchronized(this) {

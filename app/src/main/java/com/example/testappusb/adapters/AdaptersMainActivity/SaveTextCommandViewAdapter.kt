@@ -1,4 +1,4 @@
-package com.example.testappusb.adapters
+package com.example.testappusb.adapters.AdaptersMainActivity
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,8 +8,10 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testappusb.ItemsButtonTextSet
 import com.example.testappusb.R
-import com.example.testappusb.model.SaveTextCommandView
+import com.example.testappusb.model.recyclerModelForMainActivity.SaveTextCommandView
 
+
+// адаптер для добавления текстов подсказок
 class SaveTextCommandViewAdapter(
     private val context: Context,
     private val list: ArrayList<SaveTextCommandView>
@@ -28,9 +30,13 @@ class SaveTextCommandViewAdapter(
     override fun onBindViewHolder(holder: SaveTextCommandViewHolder, position: Int) {
         val currentItem = list[position]
         currentItem.text.let { text ->
+            // установка текста
             holder.buttonTextTerm.text = text
+
+            // установка собятия на клик что бы заполниь поле ввода текстом
             holder.buttonTextTerm.setOnClickListener {
                 if (context is ItemsButtonTextSet) {
+                    // в активити нужно отнаследоваться от ItemsButtonTextSet
                     context.setTextFromButton(holder.buttonTextTerm.text.toString())
                 }
             }

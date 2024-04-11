@@ -1,4 +1,4 @@
-package com.example.testappusb.model
+package com.example.testappusb.model.recyclerModelForMainActivity
 
-class SaveTextCommandView(var text: String) {
-}
+// модель для поля с подсказками
+class SaveTextCommandView(var text: String)
