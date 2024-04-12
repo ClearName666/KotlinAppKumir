@@ -19,5 +19,7 @@
     <string name="title_activity_setting_command_hint">SettingCommandHintActivity</string>
     <string name="add">Добавить</string>
     <string name="returner">Вернуться</string>
+    <string name="InfoSetHintsComm">Выберете с каким устройством вы хотите работать!</string>
+    <string name="at">at</string>
 
 </resources>

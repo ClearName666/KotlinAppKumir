@@ -70,15 +70,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             this,
             LinearLayoutManager.HORIZONTAL,
             false)
-
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
 
-
+        // получаем данные из файла с активными подсказками команд
+        ComandsHintForTerm.loadFromFile(this)
 
         // поток для обновления подсказок команд
         Thread {
-            // получаем данные из файла с активными подсказками команд
-            ComandsHintForTerm.loadFromFile(this)
 
             while (flagWorkTextSaveCommands) {
                 Thread.sleep(TIMEOUT_TEXT_COMMAND_SAVE_UPDATE)
@@ -160,6 +158,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // функция для кнопки с установкой пакета команд помошника
     fun onClickButtonMoveToSettings(view: View) {
         val i = Intent(this, SettingCommandHintActivity::class.java)
+        usb.onClear()
         startActivity(i)
     }
 

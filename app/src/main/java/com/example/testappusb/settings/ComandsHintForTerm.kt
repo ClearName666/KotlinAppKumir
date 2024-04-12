@@ -1,6 +1,8 @@
 package com.example.testappusb.settings
 
 import android.content.Context
+import android.util.Log
+import java.io.BufferedReader
 import java.io.File
 
 // активный пакет команд для подсказок
@@ -19,7 +21,6 @@ class ComandsHintForTerm {
         // чтение файла сета с подсказками
         fun loadFromFile(context: Context) {
             val file = File(context.filesDir, fileNameCommands)
-
             lisComand = if (!file.exists()) {
                 // Файл не существует
                 arrayListOf()
@@ -29,6 +30,7 @@ class ComandsHintForTerm {
                 }
                 ArrayList(data.split(","))
             }
+
         }
     }
 }

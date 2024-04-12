@@ -7,6 +7,9 @@ import android.content.Intent
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
+import android.provider.Settings.Global.getString
+import android.util.Log
+
 import com.example.testappusb.R
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
@@ -21,9 +24,11 @@ class Usb(private val context: Context) {
     val ACTION_USB_PERMISSION: String = "com.android.example.USB_PERMISSION"
     companion object {
         const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
+        const val TIMEOUT_MOVE_AT: Long = 3000
 
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
+
     }
 
     // переводы строк
@@ -33,10 +38,13 @@ class Usb(private val context: Context) {
 
     private var connection: UsbDeviceConnection? = null
     private var usbSerialDevice: UsbSerialDevice? = null
-    private var deviceName: String? = null
+    private var deviceUsb: UsbDevice? = null
 
     // поток для usb
     private val executorUsb: ExecutorService = Executors.newSingleThreadExecutor()
+
+
+    private var flagAtCommand: Boolean = true
 
     // настрока сериал порта <ЧИСЛО БИТ>
     fun onSelectUumBit(numBit: Boolean) {
@@ -153,7 +161,7 @@ class Usb(private val context: Context) {
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
 
             for (device in devises) {
-                if (device.value.deviceName == deviceName) {
+                if (device.value.deviceName == deviceUsb?.deviceName) {
                     return true
                 }
             }
@@ -163,11 +171,12 @@ class Usb(private val context: Context) {
     }
     // очищение ресурсов после отклчения диваса
     fun onClear() {
+        flagAtCommand = false
         connection?.close()
         connection = null
         usbSerialDevice?.close()
         usbSerialDevice = null
-        deviceName = null
+        deviceUsb = null
         if (context is UsbActivityInterface) {
             (context as Activity).runOnUiThread {
                 context.showButtonConnection(false)
@@ -259,6 +268,27 @@ class Usb(private val context: Context) {
                                 }
 
                                 onStartSerialSetting()
+                                deviceUsb = device
+
+                                // поток для отправки в фоновом режиме at команды
+                                Thread {
+                                    flagAtCommand = true
+                                    while (flagAtCommand) {
+                                        Thread.sleep(TIMEOUT_MOVE_AT)
+                                        if (checkConnectToDevice() && flagAtCommand) {
+                                            writeDevice(context.getString(R.string.at))
+                                        }
+                                    }
+                                }.start()
+
+                                // постоянная проверка подключения к устройству
+                                Thread {
+                                    if (context is UsbActivityInterface) {
+                                        while (checkConnectToDevice()) {
+                                            Thread.sleep(TIMEOUT_CHECK_CONNECT)
+                                        }
+                                    }
+                                }.start()
 
                             } catch (e: IOException) {
                                 printWithdrawalsShow(context.getString(R.string.Usb_ErrorConnect))
@@ -268,18 +298,6 @@ class Usb(private val context: Context) {
 
                         }
                     }
-
-                    deviceName = device?.deviceName.toString()
-
-                    // постоянная проверка подключения к устройству
-                    Thread {
-                        if (context is UsbActivityInterface) {
-                            while (checkConnectToDevice()) {
-                                Thread.sleep(TIMEOUT_CHECK_CONNECT)
-                            }
-                        }
-                    }.start()
-
                 }
             }
         }
