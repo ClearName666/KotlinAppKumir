@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestAppUsb</string>
+    <string name="app_name">K-Term</string>
     <string name="kumir">КУМИР</string>
     <string name="connect">Подключить</string>
     <string name="moveToData">Отправить</string>
