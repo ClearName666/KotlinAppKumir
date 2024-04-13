@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"
                     android:text=""
-                    android:textColor="@color/white" />
+                    android:textColor="#FFFFFF" />
             </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -191,7 +191,7 @@
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:hint="@string/Text"
-            android:textColor="@color/white" />
+            android:textColor="#FFFFFF" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
