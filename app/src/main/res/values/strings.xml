@@ -21,5 +21,6 @@
     <string name="returner">Вернуться</string>
     <string name="InfoSetHintsComm">Выберете с каким устройством вы хотите работать!</string>
     <string name="at">at</string>
+    <string name="todo">TODO</string>
 
 </resources>

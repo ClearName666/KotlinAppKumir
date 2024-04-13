@@ -5,82 +5,98 @@
     android:id="@+id/ActivityMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/night"
-    tools:context=".MainActivity">
+    android:background="#141822"
+    tools:context=".MainActivity"
+    tools:ignore="ExtraText">
 
 
-    <TextView
-        android:id="@+id/kumir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/kumir"
-        android:textSize="50sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/red"
-        android:onClick="onClickButtonConnect"
-        android:text="@string/connect"
-        app:layout_constraintBottom_toBottomOf="@+id/kumir"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/kumir"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/term"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="128dp"
-        android:background="@color/black"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/imgdevicename"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ScrollView
-            android:id="@+id/scrollTermText"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textDeviceName"
+            android:layout_width="205dp"
+            android:layout_height="17dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="10dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="316dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/term"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            tools:ignore="UselessParent">
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginBottom="7dp"
+            android:background="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textDataTerm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:text=""
-                android:textColor="@color/white" />
-        </ScrollView>
+            <ScrollView
+                android:id="@+id/scrollTermText"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints,UselessParent">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textDataTerm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:text=""
+                    android:textColor="@color/white" />
+            </ScrollView>
 
-    <Button
-        android:id="@+id/buttonMoveToData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/gray"
-        android:onClick="onClickButtonMoveToData"
-        android:text="@string/moveToData"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintSettings"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kumir">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        tools:ignore="MissingConstraints">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/settingsRecyclerView"
@@ -93,65 +109,106 @@
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <ImageButton
+        android:id="@+id/buttonConnect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/connectbutton"
+        android:contentDescription="@string/connect"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:onClick="onClickButtonConnect"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintSettings" />
+
+    <TextView
+        android:id="@+id/textConnect"
+        android:layout_width="173dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/connect"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonConnect"
+        app:layout_constraintEnd_toEndOf="@+id/buttonConnect"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/buttonConnect"
+        app:layout_constraintTop_toTopOf="@+id/buttonConnect"
+        app:layout_constraintVertical_bias="0.617" />
+
+
+    <ImageButton
+        android:id="@+id/buttonSettings"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/todo"
+        android:onClick="onClickButtonMoveToSettings"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_agenda"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <ImageButton
+        android:id="@+id/buttonClearTerm"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/todo"
+        android:onClick="onClickButtonClearTerm"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyScrollComandText"
+        android:layout_width="0dp"
+        android:layout_height="76dp"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="267dp"
+        android:layout_height="75dp"
 
-        android:layout_marginTop="45dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/inputtext"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonMoveToData"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/term">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInputDataForMoveToData"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/black"
+            android:layout_height="62dp"
             android:hint="@string/Text"
             android:textColor="@color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/textDeviceName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonSettings"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:background="@android:drawable/ic_menu_agenda"
-        android:onClick="onClickButtonMoveToSettings"
-        app:layout_constraintEnd_toStartOf="@+id/buttonClearTerm"
-        app:layout_constraintTop_toBottomOf="@+id/term" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyScrollComandText"
-        android:layout_width="200dp"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toStartOf="@+id/buttonMoveToData"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/buttonClearTerm"
-        android:layout_width="45dp"
-        android:layout_height="40dp"
-        android:background="@android:drawable/ic_menu_close_clear_cancel"
-        android:onClick="inClickButtonClearTerm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/term" />
-
+    <ImageButton
+        android:id="@+id/buttonMoveToData"
+        android:layout_width="56dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/todo"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:onClick="onClickButtonMoveToData"
+        android:scaleType="fitCenter"
+        android:src="@drawable/sandpng"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+        tools:ignore="DuplicateIds,MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

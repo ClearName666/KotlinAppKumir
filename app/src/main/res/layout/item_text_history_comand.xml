@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="35dp"
-    android:background="@color/white">
+    android:background="#FFFFFF">
 
         <Button
             android:id="@+id/itemTextComandSave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/black"
-            android:text="@string/Text"
-            android:textColor="@color/white" />
-
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF" />
 </LinearLayout>

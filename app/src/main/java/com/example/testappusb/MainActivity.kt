@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     }
 
     // функция для кнопки с тчисткой терминала
-    fun inClickButtonClearTerm(view: View) {
+    fun onClickButtonClearTerm(view: View) {
         showElements.textDataTerm.text = ""
     }
 
@@ -171,13 +171,13 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // функция для отображения статуса подключения к девайсу на кнопки
     override fun showButtonConnection(con: Boolean) {
         if (con) {
-            showElements.buttonConnect.text = getString(R.string.mainActivityText_disconnect)
-            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.green))
+            showElements.textConnect.text = getString(R.string.mainActivityText_disconnect)
+            /*showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.green))*/
         } else {
-            showElements.buttonConnect.text = getString(R.string.mainActivityText_connect)
-            showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.red))
+            showElements.textConnect.text = getString(R.string.mainActivityText_connect)
+            /*showElements.buttonConnect.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.red))*/
 
             showElements.textDataTerm.text = ""
         }
@@ -195,7 +195,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     override fun printData(data: String) {
         val termText: String = showElements.textDataTerm.text.toString() + data
         showElements.textDataTerm.text = termText
-
         showTermTextBottom()
     }
     // подключения и регистрация широковещятельного приемника

@@ -25,6 +25,7 @@ class Usb(private val context: Context) {
     companion object {
         const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
         const val TIMEOUT_MOVE_AT: Long = 3000
+        const val TIMEOUT_IGNORE_AT: Long = 30
 
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
@@ -45,6 +46,7 @@ class Usb(private val context: Context) {
 
 
     private var flagAtCommand: Boolean = true
+    private var flagIgnorRead: Boolean = false
 
     // настрока сериал порта <ЧИСЛО БИТ>
     fun onSelectUumBit(numBit: Boolean) {
@@ -192,7 +194,7 @@ class Usb(private val context: Context) {
     }
 
     // отправка данных в сериал порт
-    fun writeDevice(message: String) {
+    fun writeDevice(message: String, flagPrint: Boolean = true) {
         executorUsb.execute {
             try {
                 if (usbSerialDevice == null) {
@@ -201,7 +203,10 @@ class Usb(private val context: Context) {
                     val bytesToSend = (message + lineFeed).toByteArray()
                     usbSerialDevice?.write(bytesToSend)
 
-                    printUIThread("input>>>$message$lineFeed")
+                    if (flagPrint) {
+                        printUIThread("input>>>$message$lineFeed")
+                    }
+
                 }
             } catch (e: Exception) {
                 printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")
@@ -255,9 +260,9 @@ class Usb(private val context: Context) {
                                 usbSerialDevice?.let {
                                     if (it.open()) {
                                         val readCallback = UsbReadCallback { bytes ->
-                                            printUIThread("output>>>" + String(
-                                                bytes,
-                                                Charsets.UTF_8) + lineFeedRead)
+                                            if (!flagIgnorRead) {
+                                                printUIThread("output>>>" + String(bytes, Charsets.UTF_8))
+                                            }
                                         }
 
                                         it.read(readCallback)
@@ -276,7 +281,11 @@ class Usb(private val context: Context) {
                                     while (flagAtCommand) {
                                         Thread.sleep(TIMEOUT_MOVE_AT)
                                         if (checkConnectToDevice() && flagAtCommand) {
-                                            writeDevice(context.getString(R.string.at))
+                                            writeDevice(context.getString(R.string.at), false)
+
+                                            flagIgnorRead = true
+                                            Thread.sleep(TIMEOUT_IGNORE_AT)
+                                            flagIgnorRead = false
                                         }
                                     }
                                 }.start()
