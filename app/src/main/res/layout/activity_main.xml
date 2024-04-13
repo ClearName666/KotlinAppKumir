@@ -18,6 +18,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/imgdevicename"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -41,13 +42,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="316dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/term"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -64,10 +65,10 @@
 
             <ScrollView
                 android:id="@+id/scrollTermText"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="354dp"
+                android:layout_height="337dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginEnd="1dp"
-                android:layout_marginBottom="1dp"
                 android:layout_weight="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -132,6 +133,7 @@
         android:layout_width="173dp"
         android:layout_height="32dp"
         android:layout_marginBottom="12dp"
+        android:gravity="center"
         android:text="@string/connect"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
@@ -153,7 +155,7 @@
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_agenda"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
 
     <ImageButton
         android:id="@+id/buttonClearTerm"
@@ -210,5 +212,41 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textInputLayout"
         tools:ignore="DuplicateIds,MissingConstraints" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:background="#FFF300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="825dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:background="#FFF300"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.273"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.0">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:srcCompat="@drawable/logopng" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
