@@ -25,11 +25,13 @@
 
         <TextView
             android:id="@+id/textDeviceName"
-            android:layout_width="205dp"
-            android:layout_height="17dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="60dp"
+            android:layout_marginEnd="100dp"
             android:layout_marginBottom="10dp"
+            android:gravity="center"
             android:text=""
             android:textColor="#FFFFFF"
             android:textStyle="bold"
@@ -42,7 +44,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/term"
@@ -147,8 +149,9 @@
 
     <ImageButton
         android:id="@+id/buttonSettings"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/todo"
         android:onClick="onClickButtonMoveToSettings"
@@ -159,8 +162,9 @@
 
     <ImageButton
         android:id="@+id/buttonClearTerm"
-        android:layout_width="45dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/todo"
         android:onClick="onClickButtonClearTerm"
@@ -168,50 +172,6 @@
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout2" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyScrollComandText"
-        android:layout_width="0dp"
-        android:layout_height="76dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        android:layout_width="267dp"
-        android:layout_height="75dp"
-
-        android:layout_marginStart="16dp"
-        android:background="@drawable/inputtext"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputDataForMoveToData"
-            android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:hint="@string/Text"
-            android:textColor="#FFFFFF" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageButton
-        android:id="@+id/buttonMoveToData"
-        android:layout_width="56dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/todo"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:onClick="onClickButtonMoveToData"
-        android:scaleType="fitCenter"
-        android:src="@drawable/sandpng"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayout"
-        tools:ignore="DuplicateIds,MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
@@ -248,5 +208,84 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:srcCompat="@drawable/logopng" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/swipeHintCom"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/historyScrollComandText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historyScrollComandText"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+            app:layout_constraintEnd_toStartOf="@+id/buttonClearTextInput"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout" />
+
+        <ImageButton
+            android:id="@+id/buttonClearTextInput"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/todo"
+            android:onClick="onClickButtonCleartextInput"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonMoveToData"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/historyScrollComandText"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageButton
+            android:id="@+id/buttonMoveToData"
+            android:layout_width="56dp"
+            android:layout_height="61dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/todo"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:onClick="onClickButtonMoveToData"
+            android:scaleType="fitCenter"
+            android:src="@drawable/sandpng"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/buttonClearTextInput"
+            tools:ignore="DuplicateIds,MissingConstraints" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+
+            android:background="@drawable/inputtext"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.70">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputDataForMoveToData"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

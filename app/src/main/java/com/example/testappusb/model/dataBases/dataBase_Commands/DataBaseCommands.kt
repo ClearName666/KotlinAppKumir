@@ -1,13 +1,9 @@
-package com.example.testappusb.model.dataBases
+package com.example.testappusb.model.dataBases.dataBase_Commands
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.testappusb.settings.ConstDataStartHintForDataBaseCommands
-import java.util.concurrent.Executors
 
 
 // класс для доступа к базе дынных

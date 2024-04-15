@@ -5,19 +5,22 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.ColorStateList
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.GestureDetector
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testappusb.adapters.AdaptersMainActivity.SaveTextCommandViewAdapter
 import com.example.testappusb.adapters.AdaptersMainActivity.SettingsSerialConnectDeviceViewAdapter
 import com.example.testappusb.databinding.ActivityMainBinding
+import com.example.testappusb.gestures.SwipeGestureDetector
+import com.example.testappusb.gestures.SwipeGestureDetectorIntarface
 import com.example.testappusb.model.recyclerModelForMainActivity.SaveTextCommandView
 import com.example.testappusb.model.recyclerModelForMainActivity.SettingsSerialConnectDeviceView
 import com.example.testappusb.settings.ComandsHintForTerm
@@ -25,19 +28,13 @@ import com.example.testappusb.usb.Usb
 import com.example.testappusb.usb.UsbActivityInterface
 
 //  SERIAL TERMENALL серийный терминалл
-class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextSet {
-
-
-    companion object {
-        const val TIMEOUT_TEXT_COMMAND_SAVE_UPDATE: Long = 200
-    }
+class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextSet, SwipeGestureDetectorIntarface {
 
     private lateinit var showElements: ActivityMainBinding
 
     override val usb: Usb = Usb(this)
 
     private var flagWorkTextSaveCommands: Boolean = true
-    private var curentTextForTermInput: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,49 +69,38 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             false)
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
 
+        // свайпер для перехода с свода коман на историю
+        val gestureDetector = GestureDetector(this, SwipeGestureDetector(this))
+        showElements.swipeHintCom.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+
         // получаем данные из файла с активными подсказками команд
-        ComandsHintForTerm.loadFromFile(this)
+        ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommands)
+        // история команд
+        ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommandsHistory)
 
-        // поток для обновления подсказок команд
-        Thread {
+        // слущатель изменения текста в inputText
+        showElements.textInputDataForMoveToData.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-            while (flagWorkTextSaveCommands) {
-                Thread.sleep(TIMEOUT_TEXT_COMMAND_SAVE_UPDATE)
-
-                val startText: String = showElements.textInputDataForMoveToData.text.toString()
-                // если что то изменилось в инпуте текста
-                if (curentTextForTermInput != startText) {
-                    var listSaveTextCommandView: ArrayList<SaveTextCommandView> = arrayListOf()
-
-                    // отсартировака команд по началу команды введенной пользователем
-                    if (startText.isNotEmpty()) {
-                        val listHint: List<String> = ComandsHintForTerm.lisComand.filter {
-                            it.startsWith(startText) && it != startText
-                        }
-                        listSaveTextCommandView = ArrayList(listHint.map {
-                            SaveTextCommandView(it)
-                        })
-                    }
-
-                    runOnUiThread {
-                        val adapterSaveTextCommand = SaveTextCommandViewAdapter(this, listSaveTextCommandView)
-                        showElements.historyScrollComandText.adapter = adapterSaveTextCommand
-                        curentTextForTermInput = startText
-                    }
-                }
-
+            override fun afterTextChanged(s: Editable?) {
+                updateAdapterHintsCommands()
             }
-        }.start()
-
+        })
     }
 
     override fun onRestart() {
-        ComandsHintForTerm.loadFromFile(this)
+        ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommands)
+        ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommandsHistory)
         super.onRestart()
     }
 
     override fun onDestroy() {
         flagWorkTextSaveCommands = false
+        ComandsHintForTerm.saveToFile(this, ComandsHintForTerm.fileNameCommandsHistory)
         usb.onDestroy() // уничтожение обекта usb
         super.onDestroy()
     }
@@ -147,11 +133,16 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // функция для кнопки отправки сообщения в серийный порт
     fun onClickButtonMoveToData(view: View) {
         val textIn: String = showElements.textInputDataForMoveToData.text.toString()
+
         if (textIn.isNotEmpty()) {
+            if (usb.writeDevice(textIn)) {
+                // сохраниения истори команд
+                ComandsHintForTerm.lisComandHistory.add(
+                    showElements.textInputDataForMoveToData.text.toString()
+                )
 
-            showElements.textInputDataForMoveToData.setText("")
-
-            usb.writeDevice(textIn)
+                showElements.textInputDataForMoveToData.setText("")
+            }
         }
     }
 
@@ -165,6 +156,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // функция для кнопки с тчисткой терминала
     fun onClickButtonClearTerm(view: View) {
         showElements.textDataTerm.text = ""
+    }
+
+    // функция для очищения textInput
+    fun onClickButtonCleartextInput(view: View) {
+        showElements.textInputDataForMoveToData.setText("")
     }
 
 
@@ -278,7 +274,71 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // установка текста в инпуте ввода команд
     override fun setTextFromButton(text: String) {
         showElements.textInputDataForMoveToData.setText(text)
+
+        // курсор в конец
+        showElements.textInputDataForMoveToData.text?.let {
+            showElements.textInputDataForMoveToData.setSelection(
+                it.length
+            )
+        }
     }
 
+    // метод для обнавления адаптера подсказок
+    private fun updateAdapterHintsCommands() {
 
+        // если находимся в режиме всех команд то обновляем адаптер
+        val startText: String = showElements.textInputDataForMoveToData.text.toString()
+        var listSaveTextCommandView: ArrayList<SaveTextCommandView> = arrayListOf()
+
+        // отсартировака команд по совпадениям команды введенной пользователем
+        if (startText.isNotEmpty()) {
+            val listHint: List<String> = ComandsHintForTerm.lisComand.filter {
+                it.contains(startText) && it != startText
+            }
+            listSaveTextCommandView = ArrayList(listHint.map {
+                SaveTextCommandView(it)
+            })
+        }
+
+        // если нечего нет то элемент не виден и не занимает место
+        if (listSaveTextCommandView.size == 0) {
+            showElements.historyScrollComandText.visibility = View.GONE
+            showElements.swipeHintCom.visibility = View.GONE
+
+        } else {
+            showElements.swipeHintCom.visibility = View.VISIBLE
+            showElements.historyScrollComandText.visibility = View.VISIBLE
+            val adapterSaveTextCommand = SaveTextCommandViewAdapter(
+                this@MainActivity,
+                listSaveTextCommandView
+            )
+            showElements.historyScrollComandText.adapter = adapterSaveTextCommand
+        }
+    }
+
+    // метод обрабоотки свайпа
+    override fun onSwipeAction(flagDirection: Boolean) {
+        if (!flagDirection && ComandsHintForTerm.lisComandHistory.isNotEmpty()) { // если свайп в права
+            val listSaveTextCommandView: ArrayList<SaveTextCommandView> =
+                ArrayList(ComandsHintForTerm.lisComandHistory.map {
+                    SaveTextCommandView(it)
+                })
+
+            // если нечего нет то элемент не виден и не занимает место
+            if (listSaveTextCommandView.size == 0) {
+                showElements.historyScrollComandText.visibility = View.GONE
+                showElements.swipeHintCom.visibility = View.GONE
+            } else {
+                showElements.swipeHintCom.visibility = View.VISIBLE
+                showElements.historyScrollComandText.visibility = View.VISIBLE
+                val adapterSaveTextCommand = SaveTextCommandViewAdapter(
+                    this@MainActivity,
+                    listSaveTextCommandView
+                )
+                showElements.historyScrollComandText.adapter = adapterSaveTextCommand
+            }
+        } else {
+            updateAdapterHintsCommands()
+        }
+    }
 }

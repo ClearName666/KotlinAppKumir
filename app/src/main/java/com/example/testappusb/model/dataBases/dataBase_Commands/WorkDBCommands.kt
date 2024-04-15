@@ -1,7 +1,6 @@
-package com.example.testappusb.model.dataBases
+package com.example.testappusb.model.dataBases.dataBase_Commands
 
 import android.content.Context
-import android.util.Log
 import com.example.testappusb.model.recyclerModelSettingComHintActivity.HintCommandsSetView
 import com.example.testappusb.settings.ComandsHintForTerm
 
@@ -24,7 +23,7 @@ class WorkDBCommands {
             //Log.d("DataBase", listCommands.joinToString(","))
 
             ComandsHintForTerm.lisComand = listCommands
-            ComandsHintForTerm.saveToFile(context)
+            ComandsHintForTerm.saveToFile(context, ComandsHintForTerm.fileNameCommands)
 
         }.start()
     }

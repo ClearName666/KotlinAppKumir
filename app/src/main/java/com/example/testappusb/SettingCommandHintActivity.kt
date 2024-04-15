@@ -2,17 +2,15 @@ package com.example.testappusb
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testappusb.adapters.AdaptersSettingCommandHintActivity.HintCommandsSetViewAdapter
 import com.example.testappusb.databinding.ActivitySaveHintsCommandsBinding
-import com.example.testappusb.model.dataBases.CommandsDB
-import com.example.testappusb.model.dataBases.DataBaseCommands
+import com.example.testappusb.model.dataBases.dataBase_Commands.CommandsDB
+import com.example.testappusb.model.dataBases.dataBase_Commands.DataBaseCommands
 import com.example.testappusb.model.recyclerModelSettingComHintActivity.HintCommandsSetView
-import com.example.testappusb.settings.ComandsHintForTerm
 import com.example.testappusb.settings.ConstDataStartHintForDataBaseCommands
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -9,7 +9,7 @@ import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testappusb.R
-import com.example.testappusb.model.dataBases.WorkDBCommands
+import com.example.testappusb.model.dataBases.dataBase_Commands.WorkDBCommands
 import com.example.testappusb.model.recyclerModelSettingComHintActivity.HintCommandsSetView
 
 

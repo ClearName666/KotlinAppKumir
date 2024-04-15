@@ -69,7 +69,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     kapt("androidx.room:room-compiler:2.4.2")
     implementation("androidx.room:room-ktx:2.4.2")
-
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
     implementation("com.github.felHR85:UsbSerial:6.0.0")
     implementation("com.squareup.okio:okio:3.0.0")
     implementation("androidx.core:core-ktx:1.9.0")

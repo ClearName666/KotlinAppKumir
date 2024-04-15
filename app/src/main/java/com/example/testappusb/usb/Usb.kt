@@ -7,8 +7,6 @@ import android.content.Intent
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
-import android.provider.Settings.Global.getString
-import android.util.Log
 
 import com.example.testappusb.R
 import com.example.testappusb.settings.ConstUsbSettings
@@ -194,23 +192,24 @@ class Usb(private val context: Context) {
     }
 
     // отправка данных в сериал порт
-    fun writeDevice(message: String, flagPrint: Boolean = true) {
-        executorUsb.execute {
-            try {
-                if (usbSerialDevice == null) {
-                    printWithdrawalsShow(context.getString(R.string.Usb_NoneConnect))
-                } else {
+    fun writeDevice(message: String, flagPrint: Boolean = true): Boolean {
+        return if (usbSerialDevice != null) {
+            executorUsb.execute {
+                try {
                     val bytesToSend = (message + lineFeed).toByteArray()
                     usbSerialDevice?.write(bytesToSend)
 
                     if (flagPrint) {
-                        printUIThread("input>>>$message$lineFeed")
+                        printUIThread("input>>>$message\n")
                     }
-
+                } catch (e: Exception) {
+                    printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")
                 }
-            } catch (e: Exception) {
-                printWithdrawalsShow("${context.getString(R.string.Usb_ErrorWriteData)} ${e.message}")
             }
+            true
+        } else {
+            printWithdrawalsShow(context.getString(R.string.Usb_NoneConnect))
+            false
         }
     }
 
