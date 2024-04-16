@@ -14,14 +14,13 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="60dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/imgdevicename"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+        app:layout_constraintBottom_toBottomOf="@+id/imageButtonSettingsSeans"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toEndOf="@+id/imageButtonSettingsSeans"
+        app:layout_constraintTop_toTopOf="@+id/imageButtonSettingsSeans">
 
         <TextView
             android:id="@+id/textDeviceName"
@@ -42,17 +41,19 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/layoutMainTerm"
         android:layout_width="0dp"
         android:layout_height="350dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/term"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutSecondTerm"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="7dp"
@@ -78,6 +79,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints,UselessParent">
 
+
                 <TextView
                     android:id="@+id/textDataTerm"
                     android:layout_width="match_parent"
@@ -98,7 +100,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/layoutMainTerm"
         tools:ignore="MissingConstraints">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -147,8 +149,8 @@
         app:layout_constraintVertical_bias="0.617" />
 
 
-    <ImageButton
-        android:id="@+id/buttonSettings"
+    <!--<ImageButton
+        android:id="@+id/buttonSettingsHintsComView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -157,11 +159,11 @@
         android:onClick="onClickButtonMoveToSettings"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_agenda"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
+        app:layout_constraintStart_toEndOf="@+id/layoutMainTerm"
+        app:layout_constraintTop_toTopOf="@+id/layoutMainTerm" />
 
     <ImageButton
-        android:id="@+id/buttonClearTerm"
+        android:id="@+id/buttonClearTermSettingsView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -170,22 +172,11 @@
         android:onClick="onClickButtonClearTerm"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout2" />
+        app:layout_constraintBottom_toBottomOf="@+id/layoutMainTerm"
+        app:layout_constraintStart_toEndOf="@+id/layoutMainTerm" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:background="#FFF300"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="825dp"
         android:layout_height="70dp"
         android:layout_marginTop="10dp"
@@ -277,7 +268,8 @@
             android:background="@drawable/inputtext"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_percent="0.70">
+            app:layout_constraintWidth_percent="0.70"
+            tools:ignore="MissingConstraints">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputDataForMoveToData"
@@ -287,5 +279,152 @@
 
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/imageButtonSettingsSeans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        android:onClick="onClickSettingsView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icons8____30" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/SettingsLayontExit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layontSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:background="#33371F"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textViewForButtonClear"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center|start"
+                android:text="@string/ClearTermText"
+                android:textColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonClearTermSettingsView"
+                app:layout_constraintEnd_toStartOf="@+id/buttonClearTermSettingsView"
+                app:layout_constraintStart_toStartOf="@+id/switchAtCommand"
+                app:layout_constraintTop_toTopOf="@+id/buttonClearTermSettingsView" />
+
+            <TextView
+                android:id="@+id/textViewForButtonSettingsHintsCom"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="start"
+                android:text="@string/hintCommands"
+                android:textColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonSettingsHintsComView"
+                app:layout_constraintEnd_toStartOf="@+id/buttonSettingsHintsComView"
+                app:layout_constraintStart_toStartOf="@+id/switchAtCommand"
+                app:layout_constraintTop_toTopOf="@+id/buttonSettingsHintsComView" />
+
+            <ImageButton
+                android:id="@+id/buttonSettingsHintsComView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/todo"
+                android:onClick="onClickButtonMoveToSettings"
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_menu_agenda"
+                app:layout_constraintEnd_toEndOf="@+id/switchAtCommand"
+                app:layout_constraintTop_toBottomOf="@+id/switchAtCommand" />
+
+            <ImageButton
+                android:id="@+id/buttonClearTermSettingsView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/todo"
+                android:onClick="onClickButtonClearTerm"
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:layout_constraintEnd_toEndOf="@+id/buttonSettingsHintsComView"
+                app:layout_constraintTop_toBottomOf="@+id/buttonSettingsHintsComView" />
+
+            <Switch
+                android:id="@+id/switchAtCommand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/atGo"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textDSR"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="@string/dsr"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/layoutMainTerm"
+        app:layout_constraintTop_toTopOf="@+id/layoutMainTerm" />
+
+    <TextView
+        android:id="@+id/textCTS"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="@string/cts"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/imageDSR"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageDSR"
+        app:layout_constraintTop_toBottomOf="@+id/imageDSR" />
+
+    <ImageView
+        android:id="@+id/imageDSR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textDSR"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textDSR"
+        app:layout_constraintTop_toBottomOf="@+id/textDSR"
+        app:srcCompat="@drawable/redflag"
+        android:contentDescription="@string/todo" />
+
+    <ImageView
+        android:id="@+id/imageCTS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/textCTS"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textCTS"
+        app:layout_constraintTop_toBottomOf="@+id/textCTS"
+        app:srcCompat="@drawable/redflag"
+        android:contentDescription="@string/todo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

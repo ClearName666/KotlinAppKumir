@@ -44,20 +44,75 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
         // добавления выборки с настроками в горизонтальный скролл
         val settingsList = arrayListOf(
-            SettingsSerialConnectDeviceView("число бит", arrayListOf("8", "7")),
-            SettingsSerialConnectDeviceView("скорость", arrayListOf(
-                "300", "600", "1200", "2400", "4800",
-                "9600", "19200", "38400", "57600", "115200")),
-            SettingsSerialConnectDeviceView("четность", arrayListOf("None", "Even", "Odd")),
-            SettingsSerialConnectDeviceView("стоп бит", arrayListOf("1", "2")),
-            SettingsSerialConnectDeviceView("перев. стр", arrayListOf(
-                "CR", "LF",
-                "CRLF", "LFCR")),
-            SettingsSerialConnectDeviceView("прием перев. стр", arrayListOf(
-                "CR", "LF",
-                "CRLF", "LFCR")),
-            SettingsSerialConnectDeviceView("DTR", arrayListOf("нет", "да")),
-            SettingsSerialConnectDeviceView("RTS", arrayListOf("нет", "да"))
+            SettingsSerialConnectDeviceView(
+                getString(R.string.bit_number),
+                arrayListOf(
+                    getString(R.string.eight),
+                    getString(R.string.seven)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.speed),
+                arrayListOf(
+                    getString(R.string.speed_300),
+                    getString(R.string.speed_600),
+                    getString(R.string.speed_1200),
+                    getString(R.string.speed_2400),
+                    getString(R.string.speed_4800),
+                    getString(R.string.speed_9600),
+                    getString(R.string.speed_19200),
+                    getString(R.string.speed_38400),
+                    getString(R.string.speed_57600),
+                    getString(R.string.speed_115200)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.parity),
+                arrayListOf(
+                    getString(R.string.none),
+                    getString(R.string.even),
+                    getString(R.string.odd)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.stop_bits),
+                arrayListOf(
+                    getString(R.string.one),
+                    getString(R.string.two)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.line_end_translation),
+                arrayListOf(
+                    getString(R.string.cr),
+                    getString(R.string.lf),
+                    getString(R.string.crlf),
+                    getString(R.string.lfcr)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.receive_line_end_translation),
+                arrayListOf(
+                    getString(R.string.cr),
+                    getString(R.string.lf),
+                    getString(R.string.crlf),
+                    getString(R.string.lfcr)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.dtr),
+                arrayListOf(
+                    getString(R.string.no),
+                    getString(R.string.yes)
+                )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.rts),
+                arrayListOf(
+                    getString(R.string.no),
+                    getString(R.string.yes)
+                )
+            )
         )
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
         showElements.settingsRecyclerView.adapter = adapter
@@ -68,6 +123,23 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
             LinearLayoutManager.HORIZONTAL,
             false)
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
+
+        // очищение по зажатию
+        /*showElements.viewClickTerm.setOnLongClickListener {
+            ClearTerm()
+            true
+        }*/
+
+        // закрытие настроек при клики в пустоту или вне настроек
+        showElements.SettingsLayontExit.setOnClickListener {
+            showElements.SettingsLayontExit.visibility = View.GONE
+        }
+
+        // настрока swich отправки at команд
+        showElements.switchAtCommand.setOnCheckedChangeListener {_, isChecked ->
+            usb.flagAtCommandYesNo = isChecked
+        }
+
 
         // свайпер для перехода с свода коман на историю
         val gestureDetector = GestureDetector(this, SwipeGestureDetector(this))
@@ -155,12 +227,21 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
     // функция для кнопки с тчисткой терминала
     fun onClickButtonClearTerm(view: View) {
+        ClearTerm()
+    }
+    fun ClearTerm() {
         showElements.textDataTerm.text = ""
+        showElements.SettingsLayontExit.visibility = View.GONE
     }
 
     // функция для очищения textInput
     fun onClickButtonCleartextInput(view: View) {
         showElements.textInputDataForMoveToData.setText("")
+    }
+
+    // открытие настроек
+    fun onClickSettingsView(view: View) {
+        showElements.SettingsLayontExit.visibility = View.VISIBLE
     }
 
 
@@ -219,6 +300,21 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
         } catch (e: Exception) {
             showAlertDialog(getString(R.string.mainActivityText_ErrorConnect))
+        }
+    }
+
+    // метод для отображения dsr и cts
+    override fun printDSR_CTS(dsr: Boolean, cts: Boolean) {
+        if (dsr) {
+            showElements.imageDSR.setImageResource(R.drawable.greenflag)
+        } else {
+            showElements.imageDSR.setImageResource(R.drawable.redflag)
+        }
+
+        if (cts) {
+            showElements.imageCTS.setImageResource(R.drawable.greenflag)
+        } else {
+            showElements.imageCTS.setImageResource(R.drawable.redflag)
         }
     }
 

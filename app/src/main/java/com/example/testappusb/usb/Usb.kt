@@ -7,15 +7,17 @@ import android.content.Intent
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
-
 import com.example.testappusb.R
 import com.example.testappusb.settings.ConstUsbSettings
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
+import com.felhr.usbserial.UsbSerialInterface.UsbCTSCallback
+import com.felhr.usbserial.UsbSerialInterface.UsbDSRCallback
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 class Usb(private val context: Context) {
 
@@ -24,6 +26,7 @@ class Usb(private val context: Context) {
         const val TIMEOUT_CHECK_CONNECT: Long = 100 // таймаут для проверки подключения
         const val TIMEOUT_MOVE_AT: Long = 3000
         const val TIMEOUT_IGNORE_AT: Long = 30
+        const val TIMEOUT_READ_DTR_CTS: Long = 300
 
         val speedList: ArrayList<Int> = arrayListOf(
             300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200) // скорости в бодах
@@ -42,9 +45,14 @@ class Usb(private val context: Context) {
     // поток для usb
     private val executorUsb: ExecutorService = Executors.newSingleThreadExecutor()
 
+    var flagAtCommandYesNo: Boolean = false
 
     private var flagAtCommand: Boolean = true
+    private var flagReadDsrCts: Boolean = false
     private var flagIgnorRead: Boolean = false
+
+    private var dsrState = false
+    private var ctsState = false
 
     // настрока сериал порта <ЧИСЛО БИТ>
     fun onSelectUumBit(numBit: Boolean) {
@@ -171,6 +179,7 @@ class Usb(private val context: Context) {
     }
     // очищение ресурсов после отклчения диваса
     fun onClear() {
+        flagReadDsrCts = false
         flagAtCommand = false
         connection?.close()
         connection = null
@@ -186,7 +195,11 @@ class Usb(private val context: Context) {
     }
     // удаление всего что связано с usb
     fun onDestroy() {
-        context.unregisterReceiver(usbReceiver)
+        flagAtCommandYesNo = false
+        try {
+            context.unregisterReceiver(usbReceiver)
+        } catch (_: IllegalArgumentException) {}
+
         onClear()
         executorUsb.shutdown()
     }
@@ -278,16 +291,43 @@ class Usb(private val context: Context) {
                                 Thread {
                                     flagAtCommand = true
                                     while (flagAtCommand) {
-                                        Thread.sleep(TIMEOUT_MOVE_AT)
-                                        if (checkConnectToDevice() && flagAtCommand) {
-                                            writeDevice(context.getString(R.string.at), false)
+                                        while (flagAtCommandYesNo) {
+                                            Thread.sleep(TIMEOUT_MOVE_AT)
+                                            if (checkConnectToDevice() && flagAtCommand) {
+                                                writeDevice(context.getString(R.string.at), false)
 
-                                            flagIgnorRead = true
-                                            Thread.sleep(TIMEOUT_IGNORE_AT)
-                                            flagIgnorRead = false
+                                                flagIgnorRead = true
+                                                Thread.sleep(TIMEOUT_IGNORE_AT)
+                                                flagIgnorRead = false
+                                            }
                                         }
                                     }
+
                                 }.start()
+
+                                //  чтения dsr и cts
+                                val ctsCallback = UsbCTSCallback {
+                                    ctsState = it
+                                    //printUIThread("${context.getString(R.string.cts)} = $it\n")
+                                    if (context is UsbActivityInterface) {
+                                        (context as Activity).runOnUiThread {
+                                            context.printDSR_CTS(dsrState, ctsState)
+                                        }
+                                    }
+                                }
+
+                                val dsrCallback = UsbDSRCallback {
+                                    dsrState = it
+                                    //printUIThread("${context.getString(R.string.rts)} = $it\n")
+                                    if (context is UsbActivityInterface) {
+                                        (context as Activity).runOnUiThread {
+                                            context.printDSR_CTS(dsrState, ctsState)
+                                        }
+                                    }
+                                }
+
+                                usbSerialDevice?.getCTS(ctsCallback)
+                                usbSerialDevice?.getDSR(dsrCallback)
 
                                 // постоянная проверка подключения к устройству
                                 Thread {
