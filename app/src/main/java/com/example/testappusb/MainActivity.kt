@@ -164,11 +164,11 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         })
     }
 
-    override fun onRestart() {
+    /*override fun onRestart() {
         ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommands)
         ComandsHintForTerm.loadFromFile(this, ComandsHintForTerm.fileNameCommandsHistory)
         super.onRestart()
-    }
+    }*/
 
     override fun onDestroy() {
         flagWorkTextSaveCommands = false
@@ -221,8 +221,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     // функция для кнопки с установкой пакета команд помошника
     fun onClickButtonMoveToSettings(view: View) {
         val i = Intent(this, SettingCommandHintActivity::class.java)
-        usb.onClear()
-        startActivity(i)
+        i.getStringExtra("flag")
+        //usb.onClear()
+        startActivityForResult(i, RESULT_OK)
     }
 
     // функция для кнопки с тчисткой терминала

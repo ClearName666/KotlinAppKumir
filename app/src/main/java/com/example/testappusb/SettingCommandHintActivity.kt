@@ -1,5 +1,6 @@
 package com.example.testappusb
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -56,6 +57,8 @@ class SettingCommandHintActivity : ComponentActivity() {
 
     fun onClickButtonReturnedMain(view: View) {
         val i = Intent(this, MainActivity::class.java)
-        startActivity(i)
+        i.putExtra("flag", "ok")
+        setResult(Activity.RESULT_OK, i)
+        finish()
     }
 }

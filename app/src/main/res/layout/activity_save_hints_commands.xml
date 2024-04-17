@@ -22,8 +22,8 @@
         tools:ignore="MissingConstraints" />
 
     <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="581dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,7 +37,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/itemsSetHint"
                 android:layout_width="match_parent"
-                android:layout_height="606dp" />
+                android:layout_height="600dp" />
         </LinearLayout>
     </ScrollView>
 

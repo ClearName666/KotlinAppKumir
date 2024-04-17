@@ -38,9 +38,11 @@ class HintCommandsSetViewAdapter(private val context: Context,
             holder.radioButton.setOnClickListener { _ ->
                 val previousSelectedPosition = lastSelectedPosition
                 lastSelectedPosition = holder.adapterPosition
+
                 //  установка подсказок
-                val workDBCommands: WorkDBCommands = WorkDBCommands()
+                val workDBCommands = WorkDBCommands()
                 workDBCommands.setHintCommands(context, position)
+
                 //Log.d("DataBase", "клик $position")
                 if (previousSelectedPosition >= 0) {
                     Log.d("DataBase", "клик $previousSelectedPosition")

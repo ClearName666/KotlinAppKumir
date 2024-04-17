@@ -10,40 +10,23 @@
     tools:ignore="ExtraText">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/imgdevicename"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButtonSettingsSeans"
-        app:layout_constraintEnd_toEndOf="parent"
+    <TextView
+        android:id="@+id/textDeviceName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/buttonConnect"
         app:layout_constraintStart_toEndOf="@+id/imageButtonSettingsSeans"
-        app:layout_constraintTop_toTopOf="@+id/imageButtonSettingsSeans">
-
-        <TextView
-            android:id="@+id/textDeviceName"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutMainTerm"
         android:layout_width="0dp"
-        android:layout_height="350dp"
+        android:layout_height="400dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
@@ -117,36 +100,30 @@
 
     <ImageButton
         android:id="@+id/buttonConnect"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="158dp"
+        android:layout_height="36dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/connectbutton"
         android:contentDescription="@string/connect"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:onClick="onClickButtonConnect"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintSettings" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textConnect"
-        android:layout_width="173dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="12dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:gravity="center"
         android:text="@string/connect"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonConnect"
         app:layout_constraintEnd_toEndOf="@+id/buttonConnect"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="@+id/buttonConnect"
-        app:layout_constraintTop_toTopOf="@+id/buttonConnect"
-        app:layout_constraintVertical_bias="0.617" />
+        app:layout_constraintTop_toTopOf="@+id/buttonConnect" />
 
 
     <!--<ImageButton
@@ -179,14 +156,11 @@
         android:id="@+id/constraintLayout3"
         android:layout_width="825dp"
         android:layout_height="70dp"
-        android:layout_marginTop="10dp"
-        android:background="#FFF300"
+        android:background="#FEF500"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.273"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintStart_toStartOf="parent">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -194,16 +168,16 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:srcCompat="@drawable/logopng" />
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonSettingsSeans"
+        app:srcCompat="@drawable/kumir_k_term" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="#2E2424"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -286,6 +260,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/todo"
         android:onClick="onClickSettingsView"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonConnect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icons8____30" />
@@ -409,22 +384,22 @@
         android:id="@+id/imageDSR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
         app:layout_constraintEnd_toEndOf="@+id/textDSR"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textDSR"
         app:layout_constraintTop_toBottomOf="@+id/textDSR"
-        app:srcCompat="@drawable/redflag"
-        android:contentDescription="@string/todo" />
+        app:srcCompat="@drawable/redflag" />
 
     <ImageView
         android:id="@+id/imageCTS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
         app:layout_constraintEnd_toEndOf="@+id/textCTS"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textCTS"
         app:layout_constraintTop_toBottomOf="@+id/textCTS"
-        app:srcCompat="@drawable/redflag"
-        android:contentDescription="@string/todo" />
+        app:srcCompat="@drawable/redflag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
