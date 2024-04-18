@@ -5,7 +5,7 @@
     android:id="@+id/ActivityMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#141822"
+    android:background="@color/fonColor"
     tools:context=".MainActivity"
     tools:ignore="ExtraText">
 
@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text=""
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textColor"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toStartOf="@+id/buttonConnect"
@@ -43,7 +43,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="7dp"
-            android:background="#000000"
+            android:background="@color/termColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,10 +66,10 @@
                 <TextView
                     android:id="@+id/textDataTerm"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:scrollbars="vertical"
                     android:text=""
-                    android:textColor="#FFFFFF" />
+                    android:textColor="@color/textColor" />
             </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -104,11 +104,13 @@
         android:layout_height="36dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/connectbutton"
         android:contentDescription="@string/connect"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:onClick="onClickButtonConnect"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,51 +120,12 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text="@string/connect"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonConnect"
         app:layout_constraintEnd_toEndOf="@+id/buttonConnect"
         app:layout_constraintStart_toStartOf="@+id/buttonConnect"
         app:layout_constraintTop_toTopOf="@+id/buttonConnect" />
-
-
-    <!--<ImageButton
-        android:id="@+id/buttonSettingsHintsComView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/todo"
-        android:onClick="onClickButtonMoveToSettings"
-        android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_agenda"
-        app:layout_constraintStart_toEndOf="@+id/layoutMainTerm"
-        app:layout_constraintTop_toTopOf="@+id/layoutMainTerm" />
-
-    <ImageButton
-        android:id="@+id/buttonClearTermSettingsView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/todo"
-        android:onClick="onClickButtonClearTerm"
-        android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/layoutMainTerm"
-        app:layout_constraintStart_toEndOf="@+id/layoutMainTerm" />-->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
-        android:layout_width="825dp"
-        android:layout_height="70dp"
-        android:background="#FEF500"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.273"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/imageView"
@@ -171,13 +134,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButtonSettingsSeans"
-        app:srcCompat="@drawable/kumir_k_term" />
+        app:srcCompat="@drawable/kumir_k_term"
+        android:contentDescription="@string/todo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#2E2424"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -199,9 +162,9 @@
             android:layout_width="0dp"
             android:layout_height="75dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutMain"
             app:layout_constraintEnd_toStartOf="@+id/buttonClearTextInput"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout" />
+            app:layout_constraintStart_toStartOf="@+id/textInputLayoutMain" />
 
         <ImageButton
             android:id="@+id/buttonClearTextInput"
@@ -215,7 +178,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonMoveToData"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayoutMain"
             app:layout_constraintTop_toBottomOf="@+id/historyScrollComandText"
             app:layout_constraintVertical_bias="1.0" />
 
@@ -234,30 +197,49 @@
             app:layout_constraintTop_toTopOf="@+id/buttonClearTextInput"
             tools:ignore="DuplicateIds,MissingConstraints" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/textInputLayoutMain"
             android:layout_width="0dp"
             android:layout_height="75dp"
-
             android:background="@drawable/inputtext"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintWidth_percent="0.70"
             tools:ignore="MissingConstraints">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputDataForMoveToData"
-                android:layout_width="match_parent"
-                android:layout_height="62dp"
-                android:textColor="#FFFFFF" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/termColor"
+                android:textColor="@color/textColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputDataForMoveToData"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/textColor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/imageButtonSettingsSeans"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:contentDescription="@string/todo"
         android:onClick="onClickSettingsView"
         app:layout_constraintBottom_toBottomOf="@+id/buttonConnect"
@@ -283,7 +265,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="20dp"
-            android:background="#33371F"
+            android:background="@color/menuColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -293,7 +275,7 @@
                 android:layout_height="0dp"
                 android:gravity="center|start"
                 android:text="@string/ClearTermText"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/textColor"
                 app:layout_constraintBottom_toBottomOf="@+id/buttonClearTermSettingsView"
                 app:layout_constraintEnd_toStartOf="@+id/buttonClearTermSettingsView"
                 app:layout_constraintStart_toStartOf="@+id/switchAtCommand"
@@ -305,7 +287,7 @@
                 android:layout_height="0dp"
                 android:gravity="start"
                 android:text="@string/hintCommands"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/textColor"
                 app:layout_constraintBottom_toBottomOf="@+id/buttonSettingsHintsComView"
                 app:layout_constraintEnd_toStartOf="@+id/buttonSettingsHintsComView"
                 app:layout_constraintStart_toStartOf="@+id/switchAtCommand"
@@ -345,7 +327,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/atGo"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/textColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
@@ -362,7 +344,7 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="@string/dsr"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layoutMainTerm"
         app:layout_constraintTop_toTopOf="@+id/layoutMainTerm" />
@@ -374,7 +356,7 @@
         android:layout_marginTop="30dp"
         android:gravity="center"
         android:text="@string/cts"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="@+id/imageDSR"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imageDSR"

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="night">#202020</color>
-    <color name="gray">#5C5C5C</color>
-    <color name="red">#FB6060</color>
-    <color name="green">#27C142</color>
-    <color name="yellow">#FFEEB9</color>
+    <color name="textColor">#FFFFFF</color>
+    <color name="termColor">#000000</color>
+    <color name="fonColor">#141822</color>
+    <color name="white">#FFFFFF</color>
+    <color name="menuColor">#33371F</color>
 </resources>

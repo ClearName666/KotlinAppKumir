@@ -26,6 +26,8 @@
     <string name="ClearTerm">Отчистка терминала</string>
     <string name="hintCommands">Подсказки комманд</string>
     <string name="ClearTermText">Отчистить терминал</string>
+    <string name="okClear">Вы уверены что хотите отчистить терминал?</string>
+    <string name="ok">Ок</string>
     <string name="dsr">DSR</string>
     <string name="cts">CTS</string>
 

@@ -32,7 +32,7 @@ class SettingsSerialConnectDeviceViewAdapter(
         val currentItem = list[position]
         currentItem.list?.let { list ->
             // адаптер для поля выбора spinner берет начало текста и соединяет с каждым эл листа выбора настроек
-            val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, list.map {
+            val adapter = ArrayAdapter(context, R.layout.spinner_item, list.map {
                 "${currentItem.firstText} $it"
             }.toArrayList())
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

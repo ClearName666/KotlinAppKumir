@@ -125,10 +125,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         showElements.historyScrollComandText.layoutManager = LinearLayoutManager(this)
 
         // очищение по зажатию
-        /*showElements.viewClickTerm.setOnLongClickListener {
-            ClearTerm()
+        showElements.textDataTerm.setOnLongClickListener {
+            showAlertDialogClearTerm()
             true
-        }*/
+        }
 
         // закрытие настроек при клики в пустоту или вне настроек
         showElements.SettingsLayontExit.setOnClickListener {
@@ -348,12 +348,28 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         dialog.show()
     }
 
+    // диалоговое окно для вывод предупреждения о том что произодет отчистка терминла
+    private fun showAlertDialogClearTerm() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.okClear))
+
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+            ClearTerm()
+        }
+        builder.setNegativeButton(getString(R.string.no)) { dialog, which ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     // вывод диалоговых окон с сообщениями пользователю
     private fun showAlertDialog(msg: String) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(msg)
 
-        builder.setPositiveButton("OK") { dialog, _ ->
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog.dismiss()
         }
 
