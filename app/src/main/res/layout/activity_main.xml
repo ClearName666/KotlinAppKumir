@@ -26,11 +26,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutMainTerm"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
+        android:layout_marginBottom="170dp"
         android:background="@drawable/term"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView">
@@ -160,7 +162,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/historyScrollComandText"
             android:layout_width="0dp"
-            android:layout_height="75dp"
+            android:layout_height="120dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayoutMain"
             app:layout_constraintEnd_toStartOf="@+id/buttonClearTextInput"
@@ -371,7 +373,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textDSR"
         app:layout_constraintTop_toBottomOf="@+id/textDSR"
-        app:srcCompat="@drawable/redflag" />
+        app:srcCompat="@drawable/noneflag" />
 
     <ImageView
         android:id="@+id/imageCTS"
@@ -382,6 +384,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textCTS"
         app:layout_constraintTop_toBottomOf="@+id/textCTS"
-        app:srcCompat="@drawable/redflag" />
+        app:srcCompat="@drawable/noneflag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,6 +66,7 @@ class SettingsSerialConnectDeviceViewAdapter(
                             5 -> context.usb.onSerialLineFeedRead(position)
                             6 -> context.usb.onSerialDTR(position)
                             7 -> context.usb.onSerialRTS(position)
+                            8 -> context.usb.onSelectDsrCts(position)
 
                         }
                     }

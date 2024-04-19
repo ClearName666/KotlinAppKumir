@@ -53,14 +53,59 @@ class Usb(private val context: Context) {
     private var dsrState = false
     private var ctsState = false
 
+
+    // настрока dsr cts
+    fun onSelectDsrCts(numDsrCts: Int) {
+        ConstUsbSettings.numDsrCts = numDsrCts
+        usbSerialDevice?.let {
+            when(numDsrCts) {
+                0 -> {
+                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF)
+                }
+                1 -> {
+                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_RTS_CTS)
+                }
+                2 -> {
+                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_DSR_DTR)
+                }
+            }
+
+            if (context is UsbActivityInterface) {
+                // обновление светодиодов на деффолтное для данного режима
+                (context as Activity).runOnUiThread {
+                    when (numDsrCts) {
+                        0 -> {
+                            context.printDSR_CTS(0, 0)
+                        }
+                        1 -> {
+                            if (!ctsState) {
+                                context.printDSR_CTS(0, 1)
+                            } else {
+                                context.printDSR_CTS(0, 2)
+                            }
+                        }
+                        2 -> {
+                            if (!dsrState) {
+                                context.printDSR_CTS(1, 0)
+                            } else {
+                                context.printDSR_CTS(2, 0)
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
     // настрока сериал порта <ЧИСЛО БИТ>
     fun onSelectUumBit(numBit: Boolean) {
         ConstUsbSettings.numBit = numBit
 
         usbSerialDevice?.let {
             when (numBit) {
-                true -> usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_8)
-                false -> usbSerialDevice?.setDataBits(UsbSerialInterface.DATA_BITS_7)
+                true -> it.setDataBits(UsbSerialInterface.DATA_BITS_8)
+                false -> it.setDataBits(UsbSerialInterface.DATA_BITS_7)
             }
         }
     }
@@ -71,7 +116,7 @@ class Usb(private val context: Context) {
 
         usbSerialDevice?.let {
             if (speedList.size > speedIndex) {
-                usbSerialDevice?.setBaudRate(speedList[speedIndex])
+                it.setBaudRate(speedList[speedIndex])
             }
         }
     }
@@ -82,9 +127,9 @@ class Usb(private val context: Context) {
 
         usbSerialDevice?.let {
             when (parityIndex) {
-                0 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_NONE)
-                1 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_EVEN)
-                2 -> usbSerialDevice?.setParity(UsbSerialInterface.PARITY_ODD)
+                0 -> it.setParity(UsbSerialInterface.PARITY_NONE)
+                1 -> it.setParity(UsbSerialInterface.PARITY_EVEN)
+                2 -> it.setParity(UsbSerialInterface.PARITY_ODD)
                 else -> {}
             }
         }
@@ -96,8 +141,8 @@ class Usb(private val context: Context) {
 
         usbSerialDevice?.let {
             when (stopBitsIndex) {
-                0 -> usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_1)
-                1 -> usbSerialDevice?.setStopBits(UsbSerialInterface.STOP_BITS_2)
+                0 -> it.setStopBits(UsbSerialInterface.STOP_BITS_1)
+                1 -> it.setStopBits(UsbSerialInterface.STOP_BITS_2)
                 else -> {}
             }
         }
@@ -130,8 +175,8 @@ class Usb(private val context: Context) {
 
         usbSerialDevice?.let {
             when (indexDTR) {
-                0 -> usbSerialDevice?.setDTR(false)
-                1 -> usbSerialDevice?.setDTR(true)
+                0 -> it.setDTR(false)
+                1 -> it.setDTR(true)
                 else -> {}
             }
         }
@@ -143,8 +188,8 @@ class Usb(private val context: Context) {
 
         usbSerialDevice?.let {
             when (indexRTS) {
-                0 -> usbSerialDevice?.setRTS(false)
-                1 -> usbSerialDevice?.setRTS(true)
+                0 -> it.setRTS(false)
+                1 -> it.setRTS(true)
                 else -> {}
             }
         }
@@ -158,6 +203,7 @@ class Usb(private val context: Context) {
         onSerialStopBits(ConstUsbSettings.stopBit)
         onSerialRTS(ConstUsbSettings.rts)
         onSerialDTR(ConstUsbSettings.dtr)
+        onSelectDsrCts(ConstUsbSettings.numDsrCts)
         //Log.d("UsbMy", "ОК")
     }
 
@@ -181,6 +227,8 @@ class Usb(private val context: Context) {
     fun onClear() {
         flagReadDsrCts = false
         flagAtCommand = false
+        dsrState = false
+        ctsState = false
         connection?.close()
         connection = null
         usbSerialDevice?.close()
@@ -190,6 +238,7 @@ class Usb(private val context: Context) {
             (context as Activity).runOnUiThread {
                 context.showButtonConnection(false)
                 context.showDeviceName("")
+                context.printDSR_CTS(0, 0)
             }
         }
     }
@@ -210,7 +259,20 @@ class Usb(private val context: Context) {
             executorUsb.execute {
                 try {
                     val bytesToSend = (message + lineFeed).toByteArray()
-                    usbSerialDevice?.write(bytesToSend)
+                    when (ConstUsbSettings.numDsrCts) {
+                        0 -> usbSerialDevice?.write(bytesToSend)
+                        1 -> {
+                            if (ctsState) {
+                                usbSerialDevice?.write(bytesToSend)
+                            }
+                        }
+                        2 -> {
+                            if (dsrState) {
+                                usbSerialDevice?.write(bytesToSend)
+                            }
+                        }
+                    }
+
 
                     if (flagPrint) {
                         printUIThread("input>>>$message\n")
@@ -286,7 +348,10 @@ class Usb(private val context: Context) {
                                                 //printUIThread("${context.getString(R.string.cts)} = $it\n")
                                                 if (context is UsbActivityInterface) {
                                                     (context as Activity).runOnUiThread {
-                                                        context.printDSR_CTS(dsrState, ctsState)
+                                                        context.printDSR_CTS(
+                                                            0,
+                                                            if (ctsState) 2 else 1
+                                                        )
                                                     }
                                                 }
                                             }
@@ -299,7 +364,10 @@ class Usb(private val context: Context) {
                                                 //printUIThread("${context.getString(R.string.rts)} = $it\n")
                                                 if (context is UsbActivityInterface) {
                                                     (context as Activity).runOnUiThread {
-                                                        context.printDSR_CTS(dsrState, ctsState)
+                                                        context.printDSR_CTS(
+                                                            if (dsrState) 2 else 1,
+                                                            0
+                                                        )
                                                     }
                                                 }
                                             }
@@ -324,7 +392,6 @@ class Usb(private val context: Context) {
                                             Thread.sleep(TIMEOUT_MOVE_AT)
                                             if (checkConnectToDevice() && flagAtCommand) {
                                                 writeDevice(context.getString(R.string.at), false)
-
                                                 flagIgnorRead = true
                                                 Thread.sleep(TIMEOUT_IGNORE_AT)
                                                 flagIgnorRead = false

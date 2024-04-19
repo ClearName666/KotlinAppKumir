@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
-    android:background="#FFFFFF">
+    android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/itemTextComandSave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/button_background"
-            android:textColor="@color/textColor" />
+            android:textColor="@color/termColor" />
 </LinearLayout>

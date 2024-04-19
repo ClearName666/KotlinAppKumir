@@ -112,6 +112,15 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
                     getString(R.string.no),
                     getString(R.string.yes)
                 )
+            ),
+            SettingsSerialConnectDeviceView(
+                getString(R.string.flow),
+                arrayListOf(
+                    getString(R.string.FLOW_CONTROL_OFF),
+                    getString(R.string.FLOW_CONTROL_RTS_CTS),
+                    getString(R.string.FLOW_CONTROL_DSR_DTR)
+
+                )
             )
         )
         val adapter = SettingsSerialConnectDeviceViewAdapter(this, settingsList)
@@ -228,9 +237,9 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
     // функция для кнопки с тчисткой терминала
     fun onClickButtonClearTerm(view: View) {
-        ClearTerm()
+        clearTerm()
     }
-    fun ClearTerm() {
+    fun clearTerm() {
         showElements.textDataTerm.text = ""
         showElements.SettingsLayontExit.visibility = View.GONE
     }
@@ -305,17 +314,16 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     }
 
     // метод для отображения dsr и cts
-    override fun printDSR_CTS(dsr: Boolean, cts: Boolean) {
-        if (dsr) {
-            showElements.imageDSR.setImageResource(R.drawable.greenflag)
-        } else {
-            showElements.imageDSR.setImageResource(R.drawable.redflag)
+    override fun printDSR_CTS(dsr: Int, cts: Int) {
+        when(dsr) {
+            0 -> showElements.imageDSR.setImageResource(R.drawable.noneflag)
+            1 -> showElements.imageDSR.setImageResource(R.drawable.redflag)
+            2 -> showElements.imageDSR.setImageResource(R.drawable.greenflag)
         }
-
-        if (cts) {
-            showElements.imageCTS.setImageResource(R.drawable.greenflag)
-        } else {
-            showElements.imageCTS.setImageResource(R.drawable.redflag)
+        when(cts) {
+            0 -> showElements.imageCTS.setImageResource(R.drawable.noneflag)
+            1 -> showElements.imageCTS.setImageResource(R.drawable.redflag)
+            2 -> showElements.imageCTS.setImageResource(R.drawable.greenflag)
         }
     }
 
@@ -353,10 +361,10 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.okClear))
 
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-            ClearTerm()
+        builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
+            clearTerm()
         }
-        builder.setNegativeButton(getString(R.string.no)) { dialog, which ->
+        builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
             dialog.dismiss()
         }
 

@@ -32,7 +32,9 @@ class SaveTextCommandViewAdapter(
         currentItem.text.let { text ->
             // установка текста
             holder.buttonTextTerm.text = text
-
+            if (text.isEmpty()) {
+                holder.buttonTextTerm.visibility = View.GONE
+            }
             // установка собятия на клик что бы заполниь поле ввода текстом
             holder.buttonTextTerm.setOnClickListener {
                 if (context is ItemsButtonTextSet) {

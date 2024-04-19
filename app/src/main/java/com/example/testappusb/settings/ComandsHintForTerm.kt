@@ -28,7 +28,7 @@ class ComandsHintForTerm {
             val file = File(context.filesDir, fileName)
 
             if (fileName == fileNameCommands) {
-                lisComand = if (!file.exists()) {
+                lisComand = if (!file.exists()  && file.length() != 0L) {
                     // Файл не существует
                     arrayListOf()
                 } else {
@@ -38,7 +38,7 @@ class ComandsHintForTerm {
                     ArrayList(data.split(","))
                 }
             } else {
-                lisComandHistory = if (!file.exists()) {
+                lisComandHistory = if (!file.exists() && file.length() != 0L) {
                     // Файл не существует
                     arrayListOf()
                 } else {
