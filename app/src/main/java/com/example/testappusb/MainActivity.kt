@@ -150,6 +150,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         }
 
 
+
         // свайпер для перехода с свода коман на историю
         val gestureDetector = GestureDetector(this, SwipeGestureDetector(this))
         showElements.swipeHintCom.setOnTouchListener { _, event ->
