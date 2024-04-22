@@ -10,10 +10,12 @@ import android.hardware.usb.UsbManager
 
 import android.os.Build
 import android.os.Bundle
+import android.text.BoringLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.GestureDetector
 import android.view.View
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testappusb.adapters.AdaptersMainActivity.SaveTextCommandViewAdapter
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
     override val usb: Usb = Usb(this)
 
     private var flagWorkTextSaveCommands: Boolean = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +122,6 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
                     getString(R.string.FLOW_CONTROL_OFF),
                     getString(R.string.FLOW_CONTROL_RTS_CTS),
                     getString(R.string.FLOW_CONTROL_DSR_DTR)
-
                 )
             )
         )
@@ -186,6 +188,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         usb.onDestroy() // уничтожение обекта usb
         super.onDestroy()
     }
+
 
     // функция для кнопки подключения к дивайсу
     fun onClickButtonConnect(view: View) {
@@ -275,8 +278,8 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
         showElements.textDeviceName.text = deviceName
     }
     // вывод ошибок при работе с девасом
-    override fun withdrawalsShow(msg: String) {
-        showButtonConnection(false)
+    override fun withdrawalsShow(msg: String, notshowdis: Boolean) {
+        showButtonConnection(notshowdis)
         showAlertDialog(msg)
     }
     // вывод полученых данных из серийного порта
@@ -316,17 +319,32 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
     // метод для отображения dsr и cts
     override fun printDSR_CTS(dsr: Int, cts: Int) {
+
         when(dsr) {
             0 -> showElements.imageDSR.setImageResource(R.drawable.noneflag)
             1 -> showElements.imageDSR.setImageResource(R.drawable.redflag)
             2 -> showElements.imageDSR.setImageResource(R.drawable.greenflag)
         }
+
         when(cts) {
             0 -> showElements.imageCTS.setImageResource(R.drawable.noneflag)
             1 -> showElements.imageCTS.setImageResource(R.drawable.redflag)
             2 -> showElements.imageCTS.setImageResource(R.drawable.greenflag)
         }
     }
+
+    // функция при отключении от дивайс насильно
+    override fun disconnected() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.distonnected))
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create()
+        builder.show()
+    }
+
+
 
 
     // выборка к какому дивайсу подключиться

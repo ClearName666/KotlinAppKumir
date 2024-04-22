@@ -61,38 +61,42 @@ class Usb(private val context: Context) {
             when(numDsrCts) {
                 0 -> {
                     it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF)
-                }
-                1 -> {
-                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_RTS_CTS)
-                }
-                2 -> {
-                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_DSR_DTR)
-                }
-            }
 
-            if (context is UsbActivityInterface) {
-                // обновление светодиодов на деффолтное для данного режима
-                (context as Activity).runOnUiThread {
-                    when (numDsrCts) {
-                        0 -> {
+                    dsrState = false
+                    ctsState = false
+
+                    if (context is UsbActivityInterface) {
+                        (context as Activity).runOnUiThread {
                             context.printDSR_CTS(0, 0)
                         }
-                        1 -> {
-                            if (!ctsState) {
-                                context.printDSR_CTS(0, 1)
-                            } else {
-                                context.printDSR_CTS(0, 2)
-                            }
-                        }
-                        2 -> {
-                            if (!dsrState) {
-                                context.printDSR_CTS(1, 0)
-                            } else {
-                                context.printDSR_CTS(2, 0)
-                            }
+                    }
+                }
+                1 -> {
+                    it.close()
+                    it.open()
+                    onStartSerialSetting(false)
+
+                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_RTS_CTS)
+
+                    dsrState = false
+                    if (context is UsbActivityInterface) {
+                        (context as Activity).runOnUiThread {
+                            context.printDSR_CTS(0, 1)
                         }
                     }
+                }
+                2 -> {
+                    it.close()
+                    it.open()
+                    onStartSerialSetting(false)
 
+                    it.setFlowControl(UsbSerialInterface.FLOW_CONTROL_DSR_DTR)
+                    ctsState = false
+                    if (context is UsbActivityInterface) {
+                        (context as Activity).runOnUiThread {
+                            context.printDSR_CTS(1, 0)
+                        }
+                    }
                 }
             }
         }
@@ -196,20 +200,23 @@ class Usb(private val context: Context) {
     }
 
     // настройка серийного порта при подключении
-    fun onStartSerialSetting() {
+    fun onStartSerialSetting(flagOnSelectDsrCts: Boolean = true) {
         onSelectUumBit(ConstUsbSettings.numBit)
         onSerialSpeed(ConstUsbSettings.speedIndex)
         onSerialParity(ConstUsbSettings.parityIndex)
         onSerialStopBits(ConstUsbSettings.stopBit)
         onSerialRTS(ConstUsbSettings.rts)
         onSerialDTR(ConstUsbSettings.dtr)
-        onSelectDsrCts(ConstUsbSettings.numDsrCts)
+
+        if (flagOnSelectDsrCts) {
+            onSelectDsrCts(ConstUsbSettings.numDsrCts)
+        }
         //Log.d("UsbMy", "ОК")
     }
 
 
     // проверка подклюения девайса к устройству
-    fun checkConnectToDevice(): Boolean {
+    fun checkConnectToDevice(show: Boolean = false): Boolean {
         if (context is UsbActivityInterface) {
             val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
             val devises: HashMap<String, UsbDevice> = usbManager.deviceList
@@ -219,8 +226,16 @@ class Usb(private val context: Context) {
                     return true
                 }
             }
+            onClear()
+
+            // отобрадения статуса отключено
+            if (show) {
+                (context as Activity).runOnUiThread {
+                    context.disconnected()
+                }
+            }
+
         }
-        onClear()
         return false
     }
     // очищение ресурсов после отклчения диваса
@@ -406,7 +421,7 @@ class Usb(private val context: Context) {
                                 // постоянная проверка подключения к устройству
                                 Thread {
                                     if (context is UsbActivityInterface) {
-                                        while (checkConnectToDevice()) {
+                                        while (checkConnectToDevice(true)) {
                                             Thread.sleep(TIMEOUT_CHECK_CONNECT)
                                         }
                                     }

@@ -27,6 +27,8 @@
     <string name="hintCommands">Подсказки комманд</string>
     <string name="ClearTermText">Отчистить терминал</string>
     <string name="okClear">Вы уверены что хотите отчистить терминал?</string>
+    <string name="distonnected">Устройство было отсоединено!</string>
+    <string name="rebutOk_cts_dsr">Если вы используйте "КУМИР". Для корректной обработки cts или dsr рекуомендуется отключить от него устройство и подлючить заного! ИМЕННО ОТ КАБЕЛЯ КУМИР А НЕ ОТ ТЕЛЕФОНА!</string>
     <string name="ok">Ок</string>
     <string name="dsr">DSR</string>
     <string name="cts">CTS</string>

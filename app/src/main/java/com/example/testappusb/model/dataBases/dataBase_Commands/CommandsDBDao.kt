@@ -14,6 +14,10 @@ interface CommandsDBDao {
     @Insert
     fun insertAll(vararg commands: CommandsDB)
 
+
+    @Query("DELETE FROM CommandsDB")
+    fun deleteAll()
+
     @Delete
     fun delete(commandsDB: CommandsDB)
 

@@ -31,11 +31,27 @@ class SettingCommandHintActivity : ComponentActivity() {
 
             // если база данных пуста то заполняем ее начальными данными
             val count = dbCommands.commandsDBDao().getCount()
-            if (count == 0) {
+            if (count != 3) {
+                // на всякий случай удяляем все что было до этого
+                dbCommands.commandsDBDao().deleteAll()
+
+                // записываем деффолтные данные
                 dbCommands.commandsDBDao().insertAll(
                     CommandsDB(1,
                         ConstDataStartHintForDataBaseCommands.m32GsmModemList,
                         ConstDataStartHintForDataBaseCommands.m32GsmModemName
+                    )
+                )
+                dbCommands.commandsDBDao().insertAll(
+                    CommandsDB(2,
+                        ConstDataStartHintForDataBaseCommands.m32GsmLiteModemList,
+                        ConstDataStartHintForDataBaseCommands.m32GsmLiteModemName
+                    ),
+                )
+                dbCommands.commandsDBDao().insertAll(
+                    CommandsDB(3,
+                        ConstDataStartHintForDataBaseCommands.pm81ModemList,
+                        ConstDataStartHintForDataBaseCommands.pm81ModemName
                     )
                 )
             }
