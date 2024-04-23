@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), UsbActivityInterface, ItemsButtonTextS
 
     private lateinit var showElements: ActivityMainBinding
 
-    override val usb: Usb = Usb(this)
+
 
     private var flagWorkTextSaveCommands: Boolean = true
 
